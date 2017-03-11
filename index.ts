@@ -24,6 +24,20 @@
 
 
 /**
+ * The default logic for the 'normalizeString()' function.
+ */
+export let DefaultStringNormalizer: StringConverter = (str: string) => str.toLowerCase().trim();
+
+/**
+ * A function that converts a value to a string.
+ * 
+ * @param {any} val The value to convert.
+ * 
+ * @return {string} The value as string.
+ */
+export type StringConverter = (val: any) => string;
+
+/**
  * Returns a value as array.
  * 
  * @param {T|T[]} val The value.
@@ -41,4 +55,67 @@ export function asArray<T>(val: T | T[], removeEmpty = true): T[] {
     }
 
     return val;
+}
+
+/**
+ * Checks if the string representation of a value is empty
+ * or contains whitespaces only.
+ * 
+ * @param {any} val The value to check.
+ * 
+ * @return {boolean} Is empty or not.
+ */
+export function isEmptyString(val: any): boolean {
+    return '' === toStringSafe(val).trim();
+}
+
+/**
+ * Checks if a value is (null) or (undefined).
+ * 
+ * @param {any} val The value to check.
+ * 
+ * @return {boolean} Is (null)/(undefined) or not.
+ */
+export function isNullOrUndefined(val: any): boolean {
+    return null === val ||
+           'undefined' === typeof val;
+}
+
+/**
+ * Normalizes a value as string, so that is comparable.
+ * 
+ * @param {any} val The value to convert.
+ * @param StringConverter [normalizer] The custom normalizer.
+ * 
+ * @return {string} The normalized value.
+ */
+export function normalizeString(val: any, normalizer?: StringConverter): string {
+    if (!normalizer) {
+        normalizer = DefaultStringNormalizer;
+    }
+    if (!normalizer) {
+        normalizer = (str: string) => str;
+    }
+
+    return normalizer(toStringSafe(val));
+}
+
+/**
+ * Converts a value to a string, which is NOT (null) or (undefined).
+ * 
+ * @param {any} str The input value.
+ * @param {any} [defValue] The default value.
+ * 
+ * @return {string} The output value.
+ */
+export function toStringSafe(str: any, defValue: any = ''): string {
+    if (isNullOrUndefined(str)) {
+        str = '';
+    }
+    str = '' + str;
+    if ('' === str) {
+        str = defValue;
+    }
+
+    return str;
 }
