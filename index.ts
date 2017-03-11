@@ -22,9 +22,11 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 
+import * as crypto from 'crypto';
 import * as FSExtra from 'fs-extra';
 import * as Glob from 'glob';
 import * as MIME from 'mime';
+import * as Minimatch from 'minimatch';
 import * as net from 'net';
 import * as SimpleSocket from 'node-simple-socket';
 
@@ -326,6 +328,71 @@ export function globSync(patterns: string | string[], opts?: Glob.IOptions): str
 }
 
 /**
+ * Hashes data.
+ * 
+ * @param {any} data The data to hash. 
+ * @param {string} [algo] The algorithm to use. Default: sha256
+ * @param {string} [encoding] The string encoding to use. Default: ascii
+ * 
+ * @return {PromiseLike<Buffer>} The promise with the hash.
+ */
+export function hash(data: any, algo?: string, encoding?: string): PromiseLike<Buffer> {
+    algo = normalizeString(algo);
+    if ('' === algo) {
+        algo = 'sha256';
+    }
+    
+    encoding = normalizeString(encoding);
+    if ('' === encoding) {
+        encoding = 'ascii';
+    }
+    
+    if (!data) {
+        data = Buffer.alloc(0);
+    }
+    
+    return new Promise<Buffer>((resolve, reject) => {
+        try {
+            if (Buffer.isBuffer(data)) {
+                resolve(crypto.createHash(algo)
+                              .update(data)
+                              .digest());
+            }
+            else if (isObj(data)) {
+                let stream: NodeJS.ReadableStream = data;
+
+                let hash = crypto.createHash(algo);
+
+                stream.once('error', (err: any) => {
+                    reject(err);
+                });
+
+                stream.on('readable', (chunk: Buffer) => {
+                    hash.update(chunk);
+                });
+
+                stream.once('end', () => {
+                    resolve(hash.digest());
+                });
+            }
+            else {
+                // handle as string
+                // and convert to Buffer
+
+                hash(new Buffer(toStringSafe(data), encoding), algo, encoding).then((hash) => {
+                    resolve(hash);
+                }, (err) => {
+                    reject(err);
+                });
+            }
+        }
+        catch (e) {
+            reject(e);
+        }
+    });
+}
+
+/**
  * Checks if the string representation of a value is empty
  * or contains whitespaces only.
  * 
@@ -372,6 +439,40 @@ export function isObj(val: any): boolean {
 }
 
 /**
+ * Finds matching strings.
+ * 
+ * @param {any|any[]} values The list of values to search in. 
+ * @param {string|string[]} patterns One or more pattern. 
+ * @param {Minimatch.IOptions} [opts] The options to use.
+ * 
+ * @return {string[]} The matching values a strings.
+ */
+export function match(values: any | any[], patterns: string | string[], opts?: Minimatch.IOptions): string[] {
+    let list = asArray<any>(values, false).map(x => isNullOrUndefined(x) ? x : toStringSafe(x));
+    let patternList = asArray(patterns).map(x => toStringSafe(x))
+                                       .filter(x => !isEmptyString(x));
+
+    let allMatches: string[] = [];
+    patternList.forEach(p => {
+        allMatches = allMatches.concat(Minimatch.match(list, p, opts));
+    });
+
+    return allMatches;
+}
+
+/**
+ * Hashes data with MD5.
+ * 
+ * @param {any} data The data to hash. 
+ * @param {string} [encoding] The string encoding to use. Default: ascii
+ * 
+ * @return {PromiseLike<Buffer>} The promise with the hash.
+ */
+export function md5(data: any, encoding?: string): PromiseLike<Buffer> {
+    return hash(data, 'md5', encoding);
+}
+
+/**
  * Normalizes a value as string, so that is comparable.
  * 
  * @param {any} val The value to convert.
@@ -406,6 +507,54 @@ export function replaceAllStrings(val: any, searchValue: any, replaceValue: any)
 
     return toStringSafe(val).split(toStringSafe(searchValue))
                             .join(toStringSafe(replaceValue));
+}
+
+/**
+ * Hashes data with SHA-1.
+ * 
+ * @param {any} data The data to hash. 
+ * @param {string} [encoding] The string encoding to use. Default: ascii
+ * 
+ * @return {PromiseLike<Buffer>} The promise with the hash.
+ */
+export function sha1(data: any, encoding?: string): PromiseLike<Buffer> {
+    return hash(data, 'sha1', encoding);
+}
+
+/**
+ * Hashes data with SHA-256.
+ * 
+ * @param {any} data The data to hash. 
+ * @param {string} [encoding] The string encoding to use. Default: ascii
+ * 
+ * @return {PromiseLike<Buffer>} The promise with the hash.
+ */
+export function sha256(data: any, encoding?: string): PromiseLike<Buffer> {
+    return hash(data, 'sha256', encoding);
+}
+
+/**
+ * Hashes data with SHA-384.
+ * 
+ * @param {any} data The data to hash. 
+ * @param {string} [encoding] The string encoding to use. Default: ascii
+ * 
+ * @return {PromiseLike<Buffer>} The promise with the hash.
+ */
+export function sha384(data: any, encoding?: string): PromiseLike<Buffer> {
+    return hash(data, 'sha384', encoding);
+}
+
+/**
+ * Hashes data with SHA-512.
+ * 
+ * @param {any} data The data to hash. 
+ * @param {string} [encoding] The string encoding to use. Default: ascii
+ * 
+ * @return {PromiseLike<Buffer>} The promise with the hash.
+ */
+export function sha512(data: any, encoding?: string): PromiseLike<Buffer> {
+    return hash(data, 'sha512', encoding);
 }
 
 /**
@@ -458,4 +607,16 @@ export function toStringSafe(str: any, defValue: any = ''): string {
     }
 
     return str;
+}
+
+/**
+ * Hashes data with Whirlpool.
+ * 
+ * @param {any} data The data to hash. 
+ * @param {string} [encoding] The string encoding to use. Default: ascii
+ * 
+ * @return {PromiseLike<Buffer>} The promise with the hash.
+ */
+export function whirlpool(data: any, encoding?: string): PromiseLike<Buffer> {
+    return hash(data, 'whirlpool', encoding);
 }

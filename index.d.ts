@@ -1,6 +1,8 @@
 /// <reference types="glob" />
 /// <reference types="node" />
+/// <reference types="minimatch" />
 import * as Glob from 'glob';
+import * as Minimatch from 'minimatch';
 import * as net from 'net';
 import * as SimpleSocket from 'node-simple-socket';
 /**
@@ -129,6 +131,16 @@ export declare function glob(patterns: string | string[], opts?: Glob.IOptions):
  */
 export declare function globSync(patterns: string | string[], opts?: Glob.IOptions): string[];
 /**
+ * Hashes data.
+ *
+ * @param {any} data The data to hash.
+ * @param {string} [algo] The algorithm to use. Default: sha256
+ * @param {string} [encoding] The string encoding to use. Default: ascii
+ *
+ * @return {PromiseLike<Buffer>} The promise with the hash.
+ */
+export declare function hash(data: any, algo?: string, encoding?: string): PromiseLike<Buffer>;
+/**
  * Checks if the string representation of a value is empty
  * or contains whitespaces only.
  *
@@ -162,6 +174,25 @@ export declare function isNullOrUndefined(val: any): boolean;
  */
 export declare function isObj(val: any): boolean;
 /**
+ * Finds matching strings.
+ *
+ * @param {any|any[]} values The list of values to search in.
+ * @param {string|string[]} patterns One or more pattern.
+ * @param {Minimatch.IOptions} [opts] The options to use.
+ *
+ * @return {string[]} The matching values a strings.
+ */
+export declare function match(values: any | any[], patterns: string | string[], opts?: Minimatch.IOptions): string[];
+/**
+ * Hashes data with MD5.
+ *
+ * @param {any} data The data to hash.
+ * @param {string} [encoding] The string encoding to use. Default: ascii
+ *
+ * @return {PromiseLike<Buffer>} The promise with the hash.
+ */
+export declare function md5(data: any, encoding?: string): PromiseLike<Buffer>;
+/**
  * Normalizes a value as string, so that is comparable.
  *
  * @param {any} val The value to convert.
@@ -180,6 +211,42 @@ export declare function normalizeString(val: any, normalizer?: StringConverter):
  * @return {string} The output string.
  */
 export declare function replaceAllStrings(val: any, searchValue: any, replaceValue: any): string;
+/**
+ * Hashes data with SHA-1.
+ *
+ * @param {any} data The data to hash.
+ * @param {string} [encoding] The string encoding to use. Default: ascii
+ *
+ * @return {PromiseLike<Buffer>} The promise with the hash.
+ */
+export declare function sha1(data: any, encoding?: string): PromiseLike<Buffer>;
+/**
+ * Hashes data with SHA-256.
+ *
+ * @param {any} data The data to hash.
+ * @param {string} [encoding] The string encoding to use. Default: ascii
+ *
+ * @return {PromiseLike<Buffer>} The promise with the hash.
+ */
+export declare function sha256(data: any, encoding?: string): PromiseLike<Buffer>;
+/**
+ * Hashes data with SHA-384.
+ *
+ * @param {any} data The data to hash.
+ * @param {string} [encoding] The string encoding to use. Default: ascii
+ *
+ * @return {PromiseLike<Buffer>} The promise with the hash.
+ */
+export declare function sha384(data: any, encoding?: string): PromiseLike<Buffer>;
+/**
+ * Hashes data with SHA-512.
+ *
+ * @param {any} data The data to hash.
+ * @param {string} [encoding] The string encoding to use. Default: ascii
+ *
+ * @return {PromiseLike<Buffer>} The promise with the hash.
+ */
+export declare function sha512(data: any, encoding?: string): PromiseLike<Buffer>;
 /**
  * Starts a secure TCP server.
  *
@@ -207,3 +274,12 @@ export declare function toBooleanSafe(val: any, defaultValue?: any): boolean;
  * @return {string} The output value.
  */
 export declare function toStringSafe(str: any, defValue?: any): string;
+/**
+ * Hashes data with Whirlpool.
+ *
+ * @param {any} data The data to hash.
+ * @param {string} [encoding] The string encoding to use. Default: ascii
+ *
+ * @return {PromiseLike<Buffer>} The promise with the hash.
+ */
+export declare function whirlpool(data: any, encoding?: string): PromiseLike<Buffer>;
