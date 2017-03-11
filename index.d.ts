@@ -1,3 +1,5 @@
+/// <reference types="glob" />
+import * as Glob from 'glob';
 /**
  * A function that converts a value to a string.
  *
@@ -90,6 +92,22 @@ export declare function detectMimeByFilename(file: string, defValue?: any): stri
  * @return {T[]} The filtered array.
  */
 export declare function distinctArray<T>(arr: T[]): T[];
+/**
+ * Searches for files.
+ *
+ * @param {string|string[]} patterns One or more pattern.
+ * @param {Glob.IOptions} [opts] The options for each pattern.
+ *
+ * @return {PromiseLike<string[]>} The promise with the found files.
+ */
+export declare function glob(patterns: string | string[], opts?: Glob.IOptions): PromiseLike<string[]>;
+/**
+ * Searches for files (synchronous).
+ *
+ * @param {string|string[]} patterns One or more pattern.
+ * @param {Glob.IOptions} [opts] The options for each pattern.
+ */
+export declare function globSync(patterns: string | string[], opts?: Glob.IOptions): string[];
 /**
  * Checks if the string representation of a value is empty
  * or contains whitespaces only.

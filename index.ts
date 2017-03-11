@@ -22,6 +22,7 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 
+import * as Glob from 'glob';
 import * as MIME from 'mime';
 
 
@@ -201,6 +202,79 @@ export function distinctArray<T>(arr: T[]): T[] {
     return arr.filter((x, i) => {
         return arr.indexOf(x) === i;
     });
+}
+
+/**
+ * Searches for files.
+ * 
+ * @param {string|string[]} patterns One or more pattern. 
+ * @param {Glob.IOptions} [opts] The options for each pattern.
+ * 
+ * @return {PromiseLike<string[]>} The promise with the found files.
+ */
+export function glob(patterns: string | string[], opts?: Glob.IOptions): PromiseLike<string[]> {
+    return new Promise<string[]>((resolve, reject) => {
+        let allFiles: string[] = [];
+        let completed = (err: any) => {
+            if (err) {
+                reject(err);
+            }
+            else {
+                resolve(allFiles);
+            }
+        };
+
+        try {
+            let patternList = asArray(patterns).map(x => toStringSafe(x))
+                                               .filter(x => !isEmptyString(x));
+
+            let nextPattern: () => void;
+
+            nextPattern = () => {
+                if (patternList.length < 1) {
+                    allFiles = distinctArray(allFiles);
+                    completed(null);
+
+                    return;
+                }
+                
+                let p = patternList.shift();
+
+                Glob(p, opts, (err, matches) => {
+                    if (err) {
+                        completed(err);
+                    }
+                    else {
+                        allFiles = allFiles.concat(matches);
+                        nextPattern();
+                    }
+                });
+            };
+
+            nextPattern()
+        }
+        catch (e) {
+            completed(e);
+        }
+    });
+}
+
+/**
+ * Searches for files (synchronous).
+ * 
+ * @param {string|string[]} patterns One or more pattern. 
+ * @param {Glob.IOptions} [opts] The options for each pattern.
+ */
+export function globSync(patterns: string | string[], opts?: Glob.IOptions): string[] {
+    let patternList = asArray(patterns).map(x => toStringSafe(x))
+                                       .filter(x => !isEmptyString(x));
+
+    let allFiles: string[] = [];
+    patternList.forEach(p => {
+        allFiles = allFiles.concat(Glob.sync(p, opts));
+    });
+
+    return distinctArray(allFiles);
 }
 
 /**
