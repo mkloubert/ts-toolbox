@@ -22,8 +22,11 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 
+import * as FSExtra from 'fs-extra';
 import * as Glob from 'glob';
 import * as MIME from 'mime';
+import * as net from 'net';
+import * as SimpleSocket from 'node-simple-socket';
 
 
 /**
@@ -189,6 +192,18 @@ export function compareValues<T>(x: T, y: T): number {
  */
 export function compareValuesDesc<T>(x: T, y: T): number {
     return compareValues<T>(y, x);
+}
+
+/**
+ * Connects to a secure socket (server).
+ * 
+ * @param {number} port The TCP port. 
+ * @param {string} [host] The host address.
+ * 
+ * @return {PromiseLike<SimpleSocket.SimpleSocket>} The promise with the new socket.
+ */
+export function connectToSecureServer(port: number, host?: string): PromiseLike<SimpleSocket.SimpleSocket> {
+    return SimpleSocket.connect(port, host);
 }
 
 /**
@@ -391,6 +406,18 @@ export function replaceAllStrings(val: any, searchValue: any, replaceValue: any)
 
     return toStringSafe(val).split(toStringSafe(searchValue))
                             .join(toStringSafe(replaceValue));
+}
+
+/**
+ * Starts a secure TCP server.
+ * 
+ * @param {number} port The TCP port the server should listen on.
+ * @param {SimpleSocket.ListenCallback} cb The callback for the new connections.
+ * 
+ * @return {PromiseLike<net.Server>} The promise with the underlying Node server instance.
+ */
+export function startSecureServer(port: number, cb: SimpleSocket.ListenCallback): PromiseLike<net.Server> {
+    return SimpleSocket.listen(port, cb);
 }
 
 /**

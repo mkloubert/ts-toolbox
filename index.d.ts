@@ -1,5 +1,8 @@
 /// <reference types="glob" />
+/// <reference types="node" />
 import * as Glob from 'glob';
+import * as net from 'net';
+import * as SimpleSocket from 'node-simple-socket';
 /**
  * A function that converts a value to a string.
  *
@@ -83,6 +86,15 @@ export declare function compareValues<T>(x: T, y: T): number;
  * @return {number} The "sort value".
  */
 export declare function compareValuesDesc<T>(x: T, y: T): number;
+/**
+ * Connects to a secure socket (server).
+ *
+ * @param {number} port The TCP port.
+ * @param {string} [host] The host address.
+ *
+ * @return {PromiseLike<SimpleSocket.SimpleSocket>} The promise with the new socket.
+ */
+export declare function connectToSecureServer(port: number, host?: string): PromiseLike<SimpleSocket.SimpleSocket>;
 /**
  * Tries to detect the MIME type of a file.
  *
@@ -168,6 +180,15 @@ export declare function normalizeString(val: any, normalizer?: StringConverter):
  * @return {string} The output string.
  */
 export declare function replaceAllStrings(val: any, searchValue: any, replaceValue: any): string;
+/**
+ * Starts a secure TCP server.
+ *
+ * @param {number} port The TCP port the server should listen on.
+ * @param {SimpleSocket.ListenCallback} cb The callback for the new connections.
+ *
+ * @return {PromiseLike<net.Server>} The promise with the underlying Node server instance.
+ */
+export declare function startSecureServer(port: number, cb: SimpleSocket.ListenCallback): PromiseLike<net.Server>;
 /**
  * Converts a value to a boolean.
  *
