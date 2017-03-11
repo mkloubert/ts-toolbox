@@ -71,6 +71,39 @@ export function asArray<T>(val: T | T[], removeEmpty = true): T[] {
 }
 
 /**
+ * Returns a return value as a promise.
+ * 
+ * @param {T|PromiseLike<T>} result The result.
+ * 
+ * @return {PromiseLike<T>} The promise.
+ */
+export function asPromise<T>(result: T | PromiseLike<T>): PromiseLike<T> {
+    let r: any = result;
+    
+    return new Promise<T>((resolve, reject) => {
+        let nextAction = () => {
+            resolve(r);
+        };
+
+        if (isObj(r)) {
+            if (isFunc(r['then'])) {
+                // seems to be a promise
+
+                nextAction = () => {
+                    r.then((res: any) => {
+                        resolve(res);
+                    }, (err: any) => {
+                        reject(err);
+                    });
+                };
+            }
+        }
+
+        nextAction();
+    });
+}
+
+/**
  * Clones an object / value deep.
  * 
  * @param {T} val The value / object to clone.
@@ -290,6 +323,17 @@ export function isEmptyString(val: any): boolean {
 }
 
 /**
+ * Checks if a value is a function or not.
+ * 
+ * @param {any} val The value to check.
+ * 
+ * @return {boolean} Is function or not.
+ */
+export function isFunc(val: any): boolean {
+    return 'function' === typeof val;
+}
+
+/**
  * Checks if a value is (null) or (undefined).
  * 
  * @param {any} val The value to check.
@@ -299,6 +343,17 @@ export function isEmptyString(val: any): boolean {
 export function isNullOrUndefined(val: any): boolean {
     return null === val ||
            'undefined' === typeof val;
+}
+
+/**
+ * Checks if a value is an object or not.
+ * 
+ * @param {any} val The value to check.
+ * 
+ * @return {boolean} Is object or not.
+ */
+export function isObj(val: any): boolean {
+    return 'object' === typeof val;
 }
 
 /**

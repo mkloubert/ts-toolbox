@@ -30,6 +30,14 @@ export declare let DefaultStringNormalizer: StringConverter;
  */
 export declare function asArray<T>(val: T | T[], removeEmpty?: boolean): T[];
 /**
+ * Returns a return value as a promise.
+ *
+ * @param {T|PromiseLike<T>} result The result.
+ *
+ * @return {PromiseLike<T>} The promise.
+ */
+export declare function asPromise<T>(result: T | PromiseLike<T>): PromiseLike<T>;
+/**
  * Clones an object / value deep.
  *
  * @param {T} val The value / object to clone.
@@ -118,6 +126,14 @@ export declare function globSync(patterns: string | string[], opts?: Glob.IOptio
  */
 export declare function isEmptyString(val: any): boolean;
 /**
+ * Checks if a value is a function or not.
+ *
+ * @param {any} val The value to check.
+ *
+ * @return {boolean} Is function or not.
+ */
+export declare function isFunc(val: any): boolean;
+/**
  * Checks if a value is (null) or (undefined).
  *
  * @param {any} val The value to check.
@@ -125,6 +141,14 @@ export declare function isEmptyString(val: any): boolean;
  * @return {boolean} Is (null)/(undefined) or not.
  */
 export declare function isNullOrUndefined(val: any): boolean;
+/**
+ * Checks if a value is an object or not.
+ *
+ * @param {any} val The value to check.
+ *
+ * @return {boolean} Is object or not.
+ */
+export declare function isObj(val: any): boolean;
 /**
  * Normalizes a value as string, so that is comparable.
  *
