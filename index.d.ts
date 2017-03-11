@@ -1,8 +1,4 @@
 /**
- * The default logic for the 'normalizeString()' function.
- */
-export declare let DefaultStringNormalizer: StringConverter;
-/**
  * A function that converts a value to a string.
  *
  * @param {any} val The value to convert.
@@ -10,6 +6,18 @@ export declare let DefaultStringNormalizer: StringConverter;
  * @return {string} The value as string.
  */
 export declare type StringConverter = (val: any) => string;
+/**
+ * The default value for the 'toBooleanSafe()' function.
+ */
+export declare let DefaultBooleanValue: any;
+/**
+ * The default value for the 'detectMimeByFilename()' function.
+ */
+export declare let DefauleMimeType: any;
+/**
+ * The default logic for the 'normalizeString()' function.
+ */
+export declare let DefaultStringNormalizer: StringConverter;
 /**
  * Returns a value as array.
  *
@@ -19,6 +27,69 @@ export declare type StringConverter = (val: any) => string;
  * @return {T[]} The value as array.
  */
 export declare function asArray<T>(val: T | T[], removeEmpty?: boolean): T[];
+/**
+ * Clones an object / value deep.
+ *
+ * @param {T} val The value / object to clone.
+ *
+ * @return {T} The cloned value / object.
+ */
+export declare function cloneObject<T>(val: T): T;
+/**
+ * Compares values as strings.
+ *
+ * @param string x The "left" value.
+ * @param string y The "right" value.
+ * @param boolean [ignoreCase] Compare case sensitive or not.
+ *
+ * @return {number} The "sort value".
+ */
+export declare function compareAsStrings(x: any, y: any, ignoreCase?: boolean): number;
+/**
+ * Compares values as strings (descending).
+ *
+ * @param string x The "left" value.
+ * @param string y The "right" value.
+ * @param boolean [ignoreCase] Compare case sensitive or not.
+ *
+ * @return {number} The "sort value".
+ */
+export declare function compareAsStringsDesc(x: any, y: any, ignoreCase?: boolean): number;
+/**
+ * Compares two values for a sort operation.
+ *
+ * @param {T} x The left value.
+ * @param {T} y The right value.
+ *
+ * @return {number} The "sort value".
+ */
+export declare function compareValues<T>(x: T, y: T): number;
+/**
+ * Compares two values for a sort operation (descending).
+ *
+ * @param {T} x The left value.
+ * @param {T} y The right value.
+ *
+ * @return {number} The "sort value".
+ */
+export declare function compareValuesDesc<T>(x: T, y: T): number;
+/**
+ * Tries to detect the MIME type of a file.
+ *
+ * @param {string} file The Filename.
+ * @param {any} [defValue] The default value.
+ *
+ * @return {string} The MIME type.
+ */
+export declare function detectMimeByFilename(file: string, defValue?: any): string;
+/**
+ * Removes duplicate entries from an array.
+ *
+ * @param {T[]} arr The input array.
+ *
+ * @return {T[]} The filtered array.
+ */
+export declare function distinctArray<T>(arr: T[]): T[];
 /**
  * Checks if the string representation of a value is empty
  * or contains whitespaces only.
@@ -45,6 +116,25 @@ export declare function isNullOrUndefined(val: any): boolean;
  * @return {string} The normalized value.
  */
 export declare function normalizeString(val: any, normalizer?: StringConverter): string;
+/**
+ * Replaces all occurrences of the string representation of a value.
+ *
+ * @param {any} val The input value.
+ * @param {any} searchValue The value to search for.
+ * @param {any} replaceValue The value to replace 'searchValue' with.
+ *
+ * @return {string} The output string.
+ */
+export declare function replaceAllStrings(val: any, searchValue: any, replaceValue: any): string;
+/**
+ * Converts a value to a boolean.
+ *
+ * @param {any} val The value to convert.
+ * @param {any} [defaultValue] The value to return if 'val' is (null) or (undefined).
+ *
+ * @return {boolean} The converted value.
+ */
+export declare function toBooleanSafe(val: any, defaultValue?: any): boolean;
 /**
  * Converts a value to a string, which is NOT (null) or (undefined).
  *

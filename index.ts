@@ -22,6 +22,8 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 
+import * as MIME from 'mime';
+
 
 /**
  * A function that converts a value to a string.
@@ -37,6 +39,10 @@ export type StringConverter = (val: any) => string;
  * The default value for the 'toBooleanSafe()' function.
  */
 export let DefaultBooleanValue: any = false;
+/**
+ * The default value for the 'detectMimeByFilename()' function.
+ */
+export let DefauleMimeType: any = 'application/octet-stream';
 /**
  * The default logic for the 'normalizeString()' function.
  */
@@ -152,6 +158,52 @@ export function compareValuesDesc<T>(x: T, y: T): number {
 }
 
 /**
+ * Tries to detect the MIME type of a file.
+ * 
+ * @param {string} file The Filename.
+ * @param {any} [defValue] The default value.
+ * 
+ * @return {string} The MIME type.
+ */
+export function detectMimeByFilename(file: string, defValue?: any): string {
+    if (arguments.length < 1) {
+        defValue = DefauleMimeType;
+    }
+    
+    let mime: string;
+    try {
+        mime = MIME.lookup(file);
+    }
+    catch (e) {
+        console.log('[ERROR.ts-toolbox] detectMimeByFilename(): ' + e);
+    }
+
+    mime = normalizeString(mime);
+    if ('' === mime) {
+        mime = defValue;
+    }
+
+    return mime;
+}
+
+/**
+ * Removes duplicate entries from an array.
+ * 
+ * @param {T[]} arr The input array.
+ * 
+ * @return {T[]} The filtered array.
+ */
+export function distinctArray<T>(arr: T[]): T[] {
+    if (!arr) {
+        return arr;
+    }
+
+    return arr.filter((x, i) => {
+        return arr.indexOf(x) === i;
+    });
+}
+
+/**
  * Checks if the string representation of a value is empty
  * or contains whitespaces only.
  * 
@@ -192,6 +244,24 @@ export function normalizeString(val: any, normalizer?: StringConverter): string 
     }
 
     return normalizer(toStringSafe(val));
+}
+
+/**
+ * Replaces all occurrences of the string representation of a value.
+ * 
+ * @param {any} val The input value.
+ * @param {any} searchValue The value to search for.
+ * @param {any} replaceValue The value to replace 'searchValue' with.
+ * 
+ * @return {string} The output string.
+ */
+export function replaceAllStrings(val: any, searchValue: any, replaceValue: any): string {
+    if (isNullOrUndefined(val)) {
+        return val;
+    }
+
+    return toStringSafe(val).split(toStringSafe(searchValue))
+                            .join(toStringSafe(replaceValue));
 }
 
 /**
