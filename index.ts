@@ -24,11 +24,6 @@
 
 
 /**
- * The default logic for the 'normalizeString()' function.
- */
-export let DefaultStringNormalizer: StringConverter = (str: string) => str.toLowerCase().trim();
-
-/**
  * A function that converts a value to a string.
  * 
  * @param {any} val The value to convert.
@@ -36,6 +31,17 @@ export let DefaultStringNormalizer: StringConverter = (str: string) => str.toLow
  * @return {string} The value as string.
  */
 export type StringConverter = (val: any) => string;
+
+
+/**
+ * The default value for the 'toBooleanSafe()' function.
+ */
+export let DefaultBooleanValue: any = false;
+/**
+ * The default logic for the 'normalizeString()' function.
+ */
+export let DefaultStringNormalizer: StringConverter = (str: string) => str.toLowerCase().trim();
+
 
 /**
  * Returns a value as array.
@@ -55,6 +61,94 @@ export function asArray<T>(val: T | T[], removeEmpty = true): T[] {
     }
 
     return val;
+}
+
+/**
+ * Clones an object / value deep.
+ * 
+ * @param {T} val The value / object to clone.
+ * 
+ * @return {T} The cloned value / object.
+ */
+export function cloneObject<T>(val: T): T {
+    if (!val) {
+        return val;
+    }
+
+    return JSON.parse(JSON.stringify(val));
+}
+
+/**
+ * Compares values as strings.
+ * 
+ * @param string x The "left" value. 
+ * @param string y The "right" value.
+ * @param boolean [ignoreCase] Compare case sensitive or not.
+ * 
+ * @return {number} The "sort value".
+ */
+export function compareAsStrings(x: any, y: any,
+                                 ignoreCase = false): number {
+    if (ignoreCase) {
+        x = normalizeString(x);
+        y = normalizeString(y);
+    }
+    else {
+        x = toStringSafe(x);
+        y = toStringSafe(y);
+    }
+
+    return compareValues<any>(x, y);
+}
+
+/**
+ * Compares values as strings (descending).
+ * 
+ * @param string x The "left" value. 
+ * @param string y The "right" value.
+ * @param boolean [ignoreCase] Compare case sensitive or not.
+ * 
+ * @return {number} The "sort value".
+ */
+export function compareAsStringsDesc(x: any, y: any,
+                                     ignoreCase = false): number {
+    return compareAsStrings(y, x, ignoreCase);
+}
+
+/**
+ * Compares two values for a sort operation.
+ * 
+ * @param {T} x The left value.
+ * @param {T} y The right value.
+ * 
+ * @return {number} The "sort value".
+ */
+export function compareValues<T>(x: T, y: T): number {
+    if (x === y) {
+        return 0;
+    }
+
+    if (x > y) {
+        return 1;
+    }
+
+    if (x < y) {
+        return -1;
+    }
+
+    return 0;
+}
+
+/**
+ * Compares two values for a sort operation (descending).
+ * 
+ * @param {T} x The left value.
+ * @param {T} y The right value.
+ * 
+ * @return {number} The "sort value".
+ */
+export function compareValuesDesc<T>(x: T, y: T): number {
+    return compareValues<T>(y, x);
 }
 
 /**
@@ -98,6 +192,26 @@ export function normalizeString(val: any, normalizer?: StringConverter): string 
     }
 
     return normalizer(toStringSafe(val));
+}
+
+/**
+ * Converts a value to a boolean.
+ * 
+ * @param {any} val The value to convert.
+ * @param {any} [defaultValue] The value to return if 'val' is (null) or (undefined).
+ * 
+ * @return {boolean} The converted value.
+ */
+export function toBooleanSafe(val: any, defaultValue?: any): boolean {
+    if (arguments.length < 2) {
+        defaultValue = DefaultBooleanValue;
+    }
+
+    if (isNullOrUndefined(val)) {
+        return defaultValue;
+    }
+
+    return !!val;
 }
 
 /**
