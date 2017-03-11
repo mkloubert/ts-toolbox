@@ -1,0 +1,4 @@
+pushall.sh
+**/*.map
+index.ts
+.vscode

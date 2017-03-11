@@ -1,0 +1,31 @@
+{
+  "name": "ts-toolbox",
+  "version": "0.0.1",
+  "description": "Set of useful functions, classes, modules and helpers for Node.js written in TypeScript.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mkloubert/ts-toolbox.git"
+  },
+  "keywords": [
+    "classes",
+    "functions",
+    "modules",
+    "helpers",
+    "nodejs",
+    "typescript"
+  ],
+  "author": "mkloubert",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/mkloubert/ts-toolbox/issues"
+  },
+  "homepage": "https://github.com/mkloubert/ts-toolbox#readme",
+  "readmeFilename": "README.md",
+  "devDependencies": {
+    "@types/node": "^7.0.8"
+  }
+}
