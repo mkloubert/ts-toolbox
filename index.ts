@@ -315,6 +315,8 @@ export function glob(patterns: string | string[], opts?: Glob.IOptions): Promise
  * 
  * @param {string|string[]} patterns One or more pattern. 
  * @param {Glob.IOptions} [opts] The options for each pattern.
+ * 
+ * @return {string[]} The matching items.
  */
 export function globSync(patterns: string | string[], opts?: Glob.IOptions): string[] {
     let patternList = asArray(patterns).map(x => toStringSafe(x))

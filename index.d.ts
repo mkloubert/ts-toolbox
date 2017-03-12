@@ -129,6 +129,8 @@ export declare function glob(patterns: string | string[], opts?: Glob.IOptions):
  *
  * @param {string|string[]} patterns One or more pattern.
  * @param {Glob.IOptions} [opts] The options for each pattern.
+ *
+ * @return {string[]} The matching items.
  */
 export declare function globSync(patterns: string | string[], opts?: Glob.IOptions): string[];
 /**
