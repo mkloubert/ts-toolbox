@@ -16,6 +16,10 @@ import * as net from 'net';
 import * as SimpleSocket from 'node-simple-socket';
 import * as UUID from 'node-uuid';
 /**
+ * List of possible entity formats.
+ */
+export declare type EntityFormat = '' | 'h' | 'html' | null | undefined | '4' | 'htm4' | 'html4' | 'v4' | '5' | 'htm5' | 'html5' | 'v5' | 'x' | 'xml';
+/**
  * Describes a simple 'completed' action.
  *
  * @param {any} err The occurred error.
@@ -151,11 +155,11 @@ export declare function createSimpleCompletedAction<TResult>(resolve: (value?: T
  *
  * @param {any} data The data to decode.
  * @param {string} [encoding] The string encoding to use. Default: utf8
- * @param {string} [format] The format to use. Default: html
+ * @param {EntityFormat} [format] The format to use. Default: html
  *
  * @returns {string} The decoded string.
  */
-export declare function decodeEntities(data: any, encoding?: string, format?: string): string;
+export declare function decodeEntities(data: any, encoding?: string, format?: EntityFormat): string;
 /**
  * Tries to detect the MIME type of a file.
  *
@@ -178,11 +182,11 @@ export declare function distinctArray<T>(arr: T[]): T[];
  *
  * @param {any} data The data to encode.
  * @param {string} [encoding] The string encoding to use. Default: utf8
- * @param {string} [format] The format to use. Default: html
+ * @param {EntityFormat} [format] The format to use. Default: html
  *
  * @returns {string} The encoded string.
  */
-export declare function encodeEntities(data: any, encoding?: string, format?: string): string;
+export declare function encodeEntities(data: any, encoding?: string, format?: EntityFormat): string;
 /**
  * Checks the file type of a buffer or file.
  *

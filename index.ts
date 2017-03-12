@@ -40,6 +40,14 @@ import * as net from 'net';
 import * as SimpleSocket from 'node-simple-socket';
 import * as UUID from 'node-uuid';
 
+
+/**
+ * List of possible entity formats.
+ */
+export type EntityFormat =  '' | 'h' | 'html' | null | undefined |
+                           '4' | 'htm4' | 'html4' | 'v4' | 
+                           '5' | 'htm5' | 'html5' | 'v5' |
+                           'x' | 'xml';
 /**
  * Describes a simple 'completed' action.
  * 
@@ -73,7 +81,6 @@ export let DefauleMimeType: any = 'application/octet-stream';
  * The default logic for the 'normalizeString()' function.
  */
 export let DefaultStringNormalizer: StringConverter = (str: string) => str.toLowerCase().trim();
-
 
 /**
  * Compares data by hashing it.
@@ -321,23 +328,23 @@ export function createSimpleCompletedAction<TResult>(resolve: (value?: TResult |
  * 
  * @param {any} data The data to decode.
  * @param {string} [encoding] The string encoding to use. Default: utf8
- * @param {string} [format] The format to use. Default: html
+ * @param {EntityFormat} [format] The format to use. Default: html
  * 
  * @returns {string} The decoded string.
  */
-export function decodeEntities(data: any, encoding?: string, format?: string): string {
+export function decodeEntities(data: any, encoding?: string, format?: EntityFormat): string {
     return deOrEncodeEntities.apply(null,
                                     [ 'decode' ].concat(argumentsToArray(arguments)));
 }
 
 function deOrEncodeEntities(mode: 'decode' | 'encode',
-                            data: any, encoding?: string, format?: string): string {
+                            data: any, encoding?: string, format?: EntityFormat): string {
     encoding = normalizeString(encoding);
     if ('' === encoding) {
         encoding = 'utf8';
     }
 
-    format = normalizeString(format);
+    format = <EntityFormat>normalizeString(format);
 
     let entities: HtmlEntities.Entities;
     switch (format) {
@@ -365,10 +372,6 @@ function deOrEncodeEntities(mode: 'decode' | 'encode',
         case 'xml':
             entities = new HtmlEntities.XmlEntities();
             break;
-    }
-
-    if (!entities) {
-        throw new Error(`'${format} is NOT supported!`);
     }
 
     if (isNullOrUndefined(data)) {
@@ -437,11 +440,11 @@ export function distinctArray<T>(arr: T[]): T[] {
  * 
  * @param {any} data The data to encode.
  * @param {string} [encoding] The string encoding to use. Default: utf8
- * @param {string} [format] The format to use. Default: html
+ * @param {EntityFormat} [format] The format to use. Default: html
  * 
  * @returns {string} The encoded string.
  */
-export function encodeEntities(data: any, encoding?: string, format?: string): string {
+export function encodeEntities(data: any, encoding?: string, format?: EntityFormat): string {
     return deOrEncodeEntities.apply(null,
                                     [ 'encode' ].concat(argumentsToArray(arguments)));
 }
