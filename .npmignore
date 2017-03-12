@@ -1,5 +1,6 @@
 pushall.sh
 **/*.map
 index.ts
+testfile.txt
 .vscode
 /sandbox.*

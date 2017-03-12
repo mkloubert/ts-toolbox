@@ -38,6 +38,7 @@ import * as Minimatch from 'minimatch';
 import * as Moment from 'moment';
 import * as net from 'net';
 import * as SimpleSocket from 'node-simple-socket';
+import * as tb_workflows from './workflows';
 import * as UUID from 'node-uuid';
 
 
@@ -104,26 +105,6 @@ export function areEqual(x: any, y: any, algo?: string, encoding?: string): Prom
             reject(err);
         });
     });
-}
-
-/**
- * Converts arguments to an array.
- * 
- * @param {ArrayLike<any>} args The arguments.
- * 
- * @returns {any[]} The arguments as array.
- */
-export function argumentsToArray(args: ArrayLike<any>): any[] {
-    if (!args) {
-        return <any>args;
-    }
-
-    let result: any[] = [];
-    for (let i = 0; i < args.length; i++) {
-        result.push(args[i]);
-    }
-
-    return result;
 }
 
 /**
@@ -298,12 +279,22 @@ function createOrStartCron(start: boolean,
  * 
  * @param {(value?: TResult | PromiseLike<TResult>) => void} resolve The 'succeeded' callback.
  * @param {(reason: any) => void} [reject] The 'error' callback.
+ * @param {boolean} [allowMultiInvocations] Can be invoked for than once or not.
  * 
  * @return {SimpleCompletedAction<TResult>} The created action.
  */
 export function createSimpleCompletedAction<TResult>(resolve: (value?: TResult | PromiseLike<TResult>) => void,
-                                                     reject?: (reason: any) => void): SimpleCompletedAction<TResult> {
+                                                     reject?: (reason: any) => void,
+                                                     allowMultiInvocations = false): SimpleCompletedAction<TResult> {
+    let alreadyInvoked = false;
+    
     return function(err, result?) {
+        if (!allowMultiInvocations && alreadyInvoked) {
+            return;
+        }
+
+        alreadyInvoked = true;
+
         if (err) {
             if (reject) {
                 reject(err);
@@ -311,12 +302,7 @@ export function createSimpleCompletedAction<TResult>(resolve: (value?: TResult |
         }
         else {
             if (resolve) {
-                if (arguments.length > 1) {
-                    resolve(result);
-                }
-                else {
-                    resolve();
-                }
+                resolve(result);
             }
         }
     };
@@ -334,7 +320,7 @@ export function createSimpleCompletedAction<TResult>(resolve: (value?: TResult |
  */
 export function decodeEntities(data: any, encoding?: string, format?: EntityFormat): string {
     return deOrEncodeEntities.apply(null,
-                                    [ 'decode' ].concat(argumentsToArray(arguments)));
+                                    [ 'decode' ].concat(toArray(arguments)));
 }
 
 function deOrEncodeEntities(mode: 'decode' | 'encode',
@@ -385,8 +371,7 @@ function deOrEncodeEntities(mode: 'decode' | 'encode',
         data = toStringSafe(data);
     }
 
-    let m: Function = (<any>entities)[mode];
-    return m(data);
+    return (<any>entities)[mode](data);
 }
 
 /**
@@ -446,7 +431,7 @@ export function distinctArray<T>(arr: T[]): T[] {
  */
 export function encodeEntities(data: any, encoding?: string, format?: EntityFormat): string {
     return deOrEncodeEntities.apply(null,
-                                    [ 'encode' ].concat(argumentsToArray(arguments)));
+                                    [ 'encode' ].concat(toArray(arguments)));
 }
 
 /**
@@ -639,6 +624,8 @@ export function hash(data: any, algo?: string, encoding?: string): Promise<Buffe
     }
     
     return new Promise<Buffer>((resolve, reject) => {
+        let completed = createSimpleCompletedAction(resolve, reject);
+
         try {
             if (Buffer.isBuffer(data)) {
                 resolve(crypto.createHash(algo)
@@ -651,15 +638,25 @@ export function hash(data: any, algo?: string, encoding?: string): Promise<Buffe
                 let hash = crypto.createHash(algo);
 
                 stream.once('error', (err: any) => {
-                    reject(err);
+                    completed(err);
                 });
 
-                stream.on('readable', (chunk: Buffer) => {
-                    hash.update(chunk);
+                stream.on('data', (chunk: any) => {
+                    try {
+                        hash.update(chunk);
+                    }
+                    catch (e) {
+                        completed(e);
+                    }
                 });
 
                 stream.once('end', () => {
-                    resolve(hash.digest());
+                    try {
+                        completed(null, hash.digest());
+                    }
+                    catch (e) {
+                        completed(e);
+                    }
                 });
             }
             else {
@@ -667,14 +664,14 @@ export function hash(data: any, algo?: string, encoding?: string): Promise<Buffe
                 // and convert to Buffer
 
                 hash(new Buffer(toStringSafe(data), encoding), algo, encoding).then((hash) => {
-                    resolve(hash);
+                    completed(null, hash);
                 }, (err) => {
-                    reject(err);
+                    completed(err);
                 });
             }
         }
         catch (e) {
-            reject(e);
+            completed(e);
         }
     });
 }
@@ -933,7 +930,24 @@ export function newCron(time: string | Date,
                         onTick: () => void,
                         timeZone?: string): Cron.CronJob {
     return createOrStartCron.apply(null,
-                                   [ false ].concat(argumentsToArray(arguments)));
+                                   [ false ].concat(toArray(arguments)));
+}
+
+/**
+ * Creates a new workflow.
+ * 
+ * @param {...tb_workflows.WorkflowAction[]} firstActions The first actions.
+ * 
+ * @returns {tb_workflows.Workflow} The new workflow.
+ */
+export function newWorkflow(...firstActions: tb_workflows.WorkflowAction[]): tb_workflows.Workflow {
+    let newWorkflow = new tb_workflows.Workflow();
+
+    firstActions.forEach(a => {
+        newWorkflow.then(a);
+    });
+
+    return newWorkflow;
 }
 
 /**
@@ -1043,7 +1057,7 @@ export function startCron(time: string | Date,
                           onTick: () => void,
                           timeZone?: string): Cron.CronJob {
     return createOrStartCron.apply(null,
-                                   [ true ].concat(argumentsToArray(arguments)));
+                                   [ true ].concat(toArray(arguments)));
 }
 
 /**
@@ -1136,6 +1150,23 @@ export function startServer(port: number,
 }
 
 /**
+ * Starts a new workflow.
+ * 
+ * @param {...tb_workflows.WorkflowAction[]} actions The first actions.
+ * 
+ * @returns {Promise<any>} The promise with the result of the workflow.
+ */
+export function startWorkflow(...actions: tb_workflows.WorkflowAction[]): Promise<any> {
+    let newWorkflow = new tb_workflows.Workflow();
+
+    actions.forEach(a => {
+        newWorkflow.then(a);
+    });
+
+    return newWorkflow.start();
+}
+
+/**
  * Returns a global translation value.
  * 
  * @param {string} key The key.
@@ -1145,6 +1176,26 @@ export function startServer(port: number,
  */
 export function t(key: string, opts?: i18next.TranslationOptions): any {
     return i18next.t(key, opts);
+}
+
+/**
+ * Creates a new array from an array-like object.
+ * 
+ * @param {ArrayLike<any>} obj The obj.
+ * 
+ * @returns {any[]} The new array.
+ */
+export function toArray<T>(obj: ArrayLike<T>): T[] {
+    if (!obj) {
+        return <any>obj;
+    }
+
+    let result: T[] = [];
+    for (let i = 0; i < obj.length; i++) {
+        result.push(obj[i]);
+    }
+
+    return result;
 }
 
 /**

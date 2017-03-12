@@ -14,6 +14,7 @@ import * as Minimatch from 'minimatch';
 import * as Moment from 'moment';
 import * as net from 'net';
 import * as SimpleSocket from 'node-simple-socket';
+import * as tb_workflows from './workflows';
 import * as UUID from 'node-uuid';
 /**
  * List of possible entity formats.
@@ -61,14 +62,6 @@ export declare let DefaultStringNormalizer: StringConverter;
  * @returns {Promise<boolean>} The promise that indicates if both data are equal or not.
  */
 export declare function areEqual(x: any, y: any, algo?: string, encoding?: string): Promise<boolean>;
-/**
- * Converts arguments to an array.
- *
- * @param {ArrayLike<any>} args The arguments.
- *
- * @returns {any[]} The arguments as array.
- */
-export declare function argumentsToArray(args: ArrayLike<any>): any[];
 /**
  * Returns a value as array.
  *
@@ -146,10 +139,11 @@ export declare function connectToSecureServer(port: number, host?: string): Prom
  *
  * @param {(value?: TResult | PromiseLike<TResult>) => void} resolve The 'succeeded' callback.
  * @param {(reason: any) => void} [reject] The 'error' callback.
+ * @param {boolean} [allowMultiInvocations] Can be invoked for than once or not.
  *
  * @return {SimpleCompletedAction<TResult>} The created action.
  */
-export declare function createSimpleCompletedAction<TResult>(resolve: (value?: TResult | PromiseLike<TResult>) => void, reject?: (reason: any) => void): SimpleCompletedAction<TResult>;
+export declare function createSimpleCompletedAction<TResult>(resolve: (value?: TResult | PromiseLike<TResult>) => void, reject?: (reason: any) => void, allowMultiInvocations?: boolean): SimpleCompletedAction<TResult>;
 /**
  * Decodes the HTML/XML entities in the string representation of data.
  *
@@ -380,6 +374,14 @@ export declare function mkdirsSync(dir: string, opts?: FSExtra.MkdirOptions): vo
  */
 export declare function newCron(time: string | Date, onTick: () => void, timeZone?: string): Cron.CronJob;
 /**
+ * Creates a new workflow.
+ *
+ * @param {...tb_workflows.WorkflowAction[]} firstActions The first actions.
+ *
+ * @returns {tb_workflows.Workflow} The new workflow.
+ */
+export declare function newWorkflow(...firstActions: tb_workflows.WorkflowAction[]): tb_workflows.Workflow;
+/**
  * Normalizes a value as string, so that is comparable.
  *
  * @param {any} val The value to convert.
@@ -482,6 +484,14 @@ export declare function startServer(port: number, listener: (socket: net.Socket)
     allowHalfOpen?: boolean;
 }): Promise<net.Server>;
 /**
+ * Starts a new workflow.
+ *
+ * @param {...tb_workflows.WorkflowAction[]} actions The first actions.
+ *
+ * @returns {Promise<any>} The promise with the result of the workflow.
+ */
+export declare function startWorkflow(...actions: tb_workflows.WorkflowAction[]): Promise<any>;
+/**
  * Returns a global translation value.
  *
  * @param {string} key The key.
@@ -490,6 +500,14 @@ export declare function startServer(port: number, listener: (socket: net.Socket)
  * @returns {any} The value.
  */
 export declare function t(key: string, opts?: i18next.TranslationOptions): any;
+/**
+ * Creates a new array from an array-like object.
+ *
+ * @param {ArrayLike<any>} obj The obj.
+ *
+ * @returns {any[]} The new array.
+ */
+export declare function toArray<T>(obj: ArrayLike<T>): T[];
 /**
  * Converts a value to a boolean.
  *

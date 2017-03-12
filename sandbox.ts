@@ -1,4 +1,4 @@
-
+import * as FS from 'fs';
 import * as Toolbox from './';
 
 interface Test {
@@ -7,11 +7,29 @@ interface Test {
     c: string;
 }
 
-let j = Toolbox.fromJSON<Test>(`{
-    "a": 5979,
-    "b": true,
-    "c": "TM"
-}`);
-if (j) {
+Toolbox.startWorkflow((ctx) => {
+    if (ctx) {
 
-}
+    }
+}, (ctx) => {
+    return new Promise<any>((resolve, reject) => {
+        setTimeout(() => {
+            resolve(5979);
+        }, 5000);
+    });
+}, (ctx) => {
+    ctx.result = 'TM';
+}, (ctx) => {
+    if (!ctx.value) {
+        ctx.value = true;
+        ctx.gotoFirst();
+    }
+}, (ctx) => {
+    if (ctx) {
+        
+    }
+}).then((result) => {
+    if (result) {
+
+    }
+});
