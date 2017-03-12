@@ -35,6 +35,10 @@ export declare type StringConverter = (val: any) => string;
  */
 export declare let DefaultBooleanValue: any;
 /**
+ * The default string encoding.
+ */
+export declare let DefaultEncoding: any;
+/**
  * The default value for the 'detectMimeByFilename()' function.
  */
 export declare let DefauleMimeType: any;
@@ -143,6 +147,16 @@ export declare function connectToSecureServer(port: number, host?: string): Prom
  */
 export declare function createSimpleCompletedAction<TResult>(resolve: (value?: TResult | PromiseLike<TResult>) => void, reject?: (reason: any) => void): SimpleCompletedAction<TResult>;
 /**
+ * Decodes the HTML/XML entities in the string representation of data.
+ *
+ * @param {any} data The data to decode.
+ * @param {string} [encoding] The string encoding to use. Default: utf8
+ * @param {string} [format] The format to use. Default: html
+ *
+ * @returns {string} The decoded string.
+ */
+export declare function decodeEntities(data: any, encoding?: string, format?: string): string;
+/**
  * Tries to detect the MIME type of a file.
  *
  * @param {string} file The Filename.
@@ -159,6 +173,16 @@ export declare function detectMimeByFilename(file: string, defValue?: any): stri
  * @returns {T[]} The filtered array.
  */
 export declare function distinctArray<T>(arr: T[]): T[];
+/**
+ * Encodes the HTML/XML entities in the string representation of data.
+ *
+ * @param {any} data The data to encode.
+ * @param {string} [encoding] The string encoding to use. Default: utf8
+ * @param {string} [format] The format to use. Default: html
+ *
+ * @returns {string} The encoded string.
+ */
+export declare function encodeEntities(data: any, encoding?: string, format?: string): string;
 /**
  * Checks the file type of a buffer or file.
  *
@@ -207,6 +231,24 @@ export declare function guid(type?: string, opts?: UUID.UUIDOptions): string;
  * @returns {Promise<Buffer>} The promise with the hash.
  */
 export declare function hash(data: any, algo?: string, encoding?: string): Promise<Buffer>;
+/**
+ * Decodes the HTML entities in the string representation of data.
+ *
+ * @param {any} data The data to decode.
+ * @param {string} [encoding] The string encoding to use. Default: utf8
+ *
+ * @returns {string} The decoded string.
+ */
+export declare function htmlDecode(data: any, encoding?: string): string;
+/**
+ * Encodes the HTML entities in the string representation of data.
+ *
+ * @param {any} data The data to encode.
+ * @param {string} [encoding] The string encoding to use. Default: utf8
+ *
+ * @returns {string} The encoded string.
+ */
+export declare function htmlEncode(data: any, encoding?: string): string;
 /**
  * Initializes the global language storage.
  *
@@ -478,3 +520,21 @@ export declare function uuid(format?: string, opts?: UUID.UUIDOptions): string;
  * @returns {Promise<Buffer>} The promise with the hash.
  */
 export declare function whirlpool(data: any, encoding?: string): Promise<Buffer>;
+/**
+ * Decodes the XML entities in the string representation of data.
+ *
+ * @param {any} data The data to decode.
+ * @param {string} [encoding] The string encoding to use. Default: utf8
+ *
+ * @returns {string} The decoded string.
+ */
+export declare function xmlDecode(data: any, encoding?: string): string;
+/**
+ * Encodes the XML entities in the string representation of data.
+ *
+ * @param {any} data The data to encode.
+ * @param {string} [encoding] The string encoding to use. Default: utf8
+ *
+ * @returns {string} The encoded string.
+ */
+export declare function xmlEncode(data: any, encoding?: string): string;

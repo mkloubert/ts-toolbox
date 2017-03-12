@@ -28,6 +28,7 @@ import * as FileType from 'file-type';
 import * as fs from 'fs';
 import * as FSExtra from 'fs-extra';
 import * as Glob from 'glob';
+import * as HtmlEntities from 'html-entities';
 import * as http from 'http';
 import * as https from 'https';
 import * as i18next from 'i18next';
@@ -60,6 +61,10 @@ export type StringConverter = (val: any) => string;
  * The default value for the 'toBooleanSafe()' function.
  */
 export let DefaultBooleanValue: any = false;
+/**
+ * The default string encoding.
+ */
+export let DefaultEncoding: any = 'utf8';
 /**
  * The default value for the 'detectMimeByFilename()' function.
  */
@@ -310,6 +315,77 @@ export function createSimpleCompletedAction<TResult>(resolve: (value?: TResult |
     };
 }
 
+
+/**
+ * Decodes the HTML/XML entities in the string representation of data.
+ * 
+ * @param {any} data The data to decode.
+ * @param {string} [encoding] The string encoding to use. Default: utf8
+ * @param {string} [format] The format to use. Default: html
+ * 
+ * @returns {string} The decoded string.
+ */
+export function decodeEntities(data: any, encoding?: string, format?: string): string {
+    return deOrEncodeEntities.apply(null,
+                                    [ 'decode' ].concat(argumentsToArray(arguments)));
+}
+
+function deOrEncodeEntities(mode: 'decode' | 'encode',
+                            data: any, encoding?: string, format?: string): string {
+    encoding = normalizeString(encoding);
+    if ('' === encoding) {
+        encoding = 'utf8';
+    }
+
+    format = normalizeString(format);
+
+    let entities: HtmlEntities.Entities;
+    switch (format) {
+        case '':
+        case 'h':
+        case 'html':
+            entities = new HtmlEntities.AllHtmlEntities();
+            break;
+
+        case '4':
+        case 'v4':
+        case 'html4':
+        case 'htm4':
+            entities = new HtmlEntities.Html4Entities();
+            break;
+
+        case '5':
+        case 'v5':
+        case 'html5':
+        case 'htm5':
+            entities = new HtmlEntities.Html5Entities();
+            break;
+
+        case 'x':
+        case 'xml':
+            entities = new HtmlEntities.XmlEntities();
+            break;
+    }
+
+    if (!entities) {
+        throw new Error(`'${format} is NOT supported!`);
+    }
+
+    if (isNullOrUndefined(data)) {
+        return data;
+    }
+
+    if (Buffer.isBuffer(data)) {
+        data = data.toString(encoding);
+    }
+    else {
+        data = toStringSafe(data);
+    }
+
+    let m: Function = (<any>entities)[mode];
+    return m(data);
+}
+
 /**
  * Tries to detect the MIME type of a file.
  * 
@@ -354,6 +430,20 @@ export function distinctArray<T>(arr: T[]): T[] {
     return arr.filter((x, i) => {
         return arr.indexOf(x) === i;
     });
+}
+
+/**
+ * Encodes the HTML/XML entities in the string representation of data.
+ * 
+ * @param {any} data The data to encode.
+ * @param {string} [encoding] The string encoding to use. Default: utf8
+ * @param {string} [format] The format to use. Default: html
+ * 
+ * @returns {string} The encoded string.
+ */
+export function encodeEntities(data: any, encoding?: string, format?: string): string {
+    return deOrEncodeEntities.apply(null,
+                                    [ 'encode' ].concat(argumentsToArray(arguments)));
 }
 
 /**
@@ -568,6 +658,30 @@ export function hash(data: any, algo?: string, encoding?: string): Promise<Buffe
             reject(e);
         }
     });
+}
+
+/**
+ * Decodes the HTML entities in the string representation of data.
+ * 
+ * @param {any} data The data to decode.
+ * @param {string} [encoding] The string encoding to use. Default: utf8
+ * 
+ * @returns {string} The decoded string.
+ */
+export function htmlDecode(data: any, encoding?: string): string {
+    return decodeEntities(data, encoding, 'html');
+}
+
+/**
+ * Encodes the HTML entities in the string representation of data.
+ * 
+ * @param {any} data The data to encode.
+ * @param {string} [encoding] The string encoding to use. Default: utf8
+ * 
+ * @returns {string} The encoded string.
+ */
+export function htmlEncode(data: any, encoding?: string): string {
+    return encodeEntities(data, encoding, 'html');
 }
 
 /**
@@ -1043,6 +1157,15 @@ export function toBooleanSafe(val: any, defaultValue?: any): boolean {
  * @returns {string} The output value.
  */
 export function toStringSafe(str: any, defValue: any = ''): string {
+    if (Buffer.isBuffer(str)) {
+        let enc = normalizeString(DefaultEncoding);
+        if ('' === enc) {
+            enc = 'ascii';
+        }
+
+        str = str.toString(enc);
+    }
+
     if (isNullOrUndefined(str)) {
         str = '';
     }
@@ -1105,4 +1228,28 @@ export function uuid(format?: string, opts?: UUID.UUIDOptions): string {
  */
 export function whirlpool(data: any, encoding?: string): Promise<Buffer> {
     return hash(data, 'whirlpool', encoding);
+}
+
+/**
+ * Decodes the XML entities in the string representation of data.
+ * 
+ * @param {any} data The data to decode.
+ * @param {string} [encoding] The string encoding to use. Default: utf8
+ * 
+ * @returns {string} The decoded string.
+ */
+export function xmlDecode(data: any, encoding?: string): string {
+    return decodeEntities(data, encoding, 'xml');
+}
+
+/**
+ * Encodes the XML entities in the string representation of data.
+ * 
+ * @param {any} data The data to encode.
+ * @param {string} [encoding] The string encoding to use. Default: utf8
+ * 
+ * @returns {string} The encoded string.
+ */
+export function xmlEncode(data: any, encoding?: string): string {
+    return encodeEntities(data, encoding, 'xml');
 }

@@ -1,8 +1,8 @@
 
 import * as Toolbox from './';
 
-Toolbox.areEqual('abc', 'abcd').then((e) => {
-    if (e) {
+let e = Toolbox.xmlEncode('<html>');
+let d = Toolbox.xmlDecode(e);
+if (e) {
 
-    }
-});
+}
