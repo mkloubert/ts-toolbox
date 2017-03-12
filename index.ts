@@ -22,6 +22,7 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 
+import * as Cron from 'cron';
 import * as crypto from 'crypto';
 import * as FileType from 'file-type';
 import * as fs from 'fs';
@@ -62,6 +63,26 @@ export let DefauleMimeType: any = 'application/octet-stream';
  */
 export let DefaultStringNormalizer: StringConverter = (str: string) => str.toLowerCase().trim();
 
+
+/**
+ * Converts arguments to an array.
+ * 
+ * @param {IArguments} args The arguments.
+ * 
+ * @returns {any[]} The arguments as array.
+ */
+export function argumentsToArray(args: IArguments): any[] {
+    if (!args) {
+        return <any>args;
+    }
+
+    let result: any[] = [];
+    for (let i = 0; i < args.length; i++) {
+        result.push(args[i]);
+    }
+
+    return result;
+}
 
 /**
  * Returns a value as array.
@@ -214,6 +235,20 @@ export function compareValuesDesc<T>(x: T, y: T): number {
  */
 export function connectToSecureServer(port: number, host?: string): Promise<SimpleSocket.SimpleSocket> {
     return SimpleSocket.connect(port, host);
+}
+
+function createOrStartCron(start: boolean,
+                           time: string | Date,
+                           onTick: () => void,
+                           timeZone?: string): Cron.CronJob {
+    let newCronJob = new Cron.CronJob({
+        cronTime: time,
+        onTick: onTick,
+        start: start,
+        timeZone: timeZone,
+    });
+
+    return newCronJob;
 }
 
 /**
@@ -632,6 +667,22 @@ export function md5(data: any, encoding?: string): Promise<Buffer> {
 }
 
 /**
+ * Creates a new cron job.
+ * 
+ * @param {(string|Date)} time The cron time.
+ * @param {() => void} onTick The "tick" function.
+ * @param {string} [timeZone] The custom timezone to use.
+ * 
+ * @returns {Cron.CronJob} The new job.
+ */
+export function newCron(time: string | Date,
+                        onTick: () => void,
+                        timeZone?: string): Cron.CronJob {
+    return createOrStartCron.apply(null,
+                                   [ false ].concat(argumentsToArray(arguments)));
+}
+
+/**
  * Normalizes a value as string, so that is comparable.
  * 
  * @param {any} val The value to convert.
@@ -723,6 +774,22 @@ export function sha384(data: any, encoding?: string): Promise<Buffer> {
  */
 export function sha512(data: any, encoding?: string): Promise<Buffer> {
     return hash(data, 'sha512', encoding);
+}
+
+/**
+ * Starts a new cron job.
+ * 
+ * @param {(string|Date)} time The cron time.
+ * @param {() => void} onTick The "tick" function.
+ * @param {string} [timeZone] The custom timezone to use.
+ * 
+ * @returns {Cron.CronJob} The new job.
+ */
+export function startCron(time: string | Date,
+                          onTick: () => void,
+                          timeZone?: string): Cron.CronJob {
+    return createOrStartCron.apply(null,
+                                   [ true ].concat(argumentsToArray(arguments)));
 }
 
 /**

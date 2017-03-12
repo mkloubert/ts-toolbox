@@ -26,6 +26,7 @@
   "homepage": "https://github.com/mkloubert/ts-toolbox#readme",
   "readmeFilename": "README.md",
   "devDependencies": {
+    "@types/cron": "^1.2.0",
     "@types/file-type": "0.0.2",
     "@types/fs-extra": "0.0.37",
     "@types/glob": "^5.0.30",
@@ -36,6 +37,7 @@
     "@types/node-uuid": "0.0.28"
   },
   "dependencies": {
+    "cron": "^1.2.1",
     "file-type": "^4.1.0",
     "fs-extra": "^2.0.0",
     "glob": "^7.1.1",

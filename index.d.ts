@@ -3,6 +3,7 @@
 /// <reference types="node" />
 /// <reference types="i18next" />
 /// <reference types="minimatch" />
+import * as Cron from 'cron';
 import * as FileType from 'file-type';
 import * as Glob from 'glob';
 import * as http from 'http';
@@ -33,6 +34,14 @@ export declare let DefauleMimeType: any;
  * The default logic for the 'normalizeString()' function.
  */
 export declare let DefaultStringNormalizer: StringConverter;
+/**
+ * Converts arguments to an array.
+ *
+ * @param {IArguments} args The arguments.
+ *
+ * @returns {any[]} The arguments as array.
+ */
+export declare function argumentsToArray(args: IArguments): any[];
 /**
  * Returns a value as array.
  *
@@ -247,6 +256,16 @@ export declare function match(values: any | any[], patterns: string | string[], 
  */
 export declare function md5(data: any, encoding?: string): Promise<Buffer>;
 /**
+ * Creates a new cron job.
+ *
+ * @param {(string|Date)} time The cron time.
+ * @param {() => void} onTick The "tick" function.
+ * @param {string} [timeZone] The custom timezone to use.
+ *
+ * @returns {Cron.CronJob} The new job.
+ */
+export declare function newCron(time: string | Date, onTick: () => void, timeZone?: string): Cron.CronJob;
+/**
  * Normalizes a value as string, so that is comparable.
  *
  * @param {any} val The value to convert.
@@ -307,6 +326,16 @@ export declare function sha384(data: any, encoding?: string): Promise<Buffer>;
  * @returns {Promise<Buffer>} The promise with the hash.
  */
 export declare function sha512(data: any, encoding?: string): Promise<Buffer>;
+/**
+ * Starts a new cron job.
+ *
+ * @param {(string|Date)} time The cron time.
+ * @param {() => void} onTick The "tick" function.
+ * @param {string} [timeZone] The custom timezone to use.
+ *
+ * @returns {Cron.CronJob} The new job.
+ */
+export declare function startCron(time: string | Date, onTick: () => void, timeZone?: string): Cron.CronJob;
 /**
  * Starts a new HTTP server.
  *

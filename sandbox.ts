@@ -1,10 +1,6 @@
 
 import * as Toolbox from './';
 
-Toolbox.startHttpServer((req, resp) => {
-    if (req) {
-        
-    }
-}).catch((err) => {
-
+let cron = Toolbox.startCron('*/5 * * * * *', () => {
+    console.log(new Date());
 });
