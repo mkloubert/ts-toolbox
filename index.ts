@@ -454,8 +454,14 @@ export function match(values: any | any[], patterns: string | string[], opts?: M
                                        .filter(x => !isEmptyString(x));
 
     let allMatches: string[] = [];
-    patternList.forEach(p => {
-        allMatches = allMatches.concat(Minimatch.match(list, p, opts));
+    list.forEach(x => {
+        for (let i = 0; i < patternList.length; i++) {
+            let p = patternList[i];
+            if (Minimatch.match([ x ], p, opts).length > 0) {
+                allMatches.push(x);
+                break;
+            }
+        }
     });
 
     return allMatches;
