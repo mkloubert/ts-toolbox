@@ -27,6 +27,7 @@ import * as FSExtra from 'fs-extra';
 import * as Glob from 'glob';
 import * as MIME from 'mime';
 import * as Minimatch from 'minimatch';
+import * as Moment from 'moment';
 import * as net from 'net';
 import * as SimpleSocket from 'node-simple-socket';
 
@@ -492,6 +493,15 @@ export function normalizeString(val: any, normalizer?: StringConverter): string 
 }
 
 /**
+ * Returns the current time.
+ * 
+ * @return {Moment.Moment} The current time.
+ */
+export function now(): Moment.Moment {
+    return Moment();
+}
+
+/**
  * Replaces all occurrences of the string representation of a value.
  * 
  * @param {any} val The input value.
@@ -607,6 +617,15 @@ export function toStringSafe(str: any, defValue: any = ''): string {
     }
 
     return str;
+}
+
+/**
+ * Returns the current UTC time.
+ * 
+ * @return {Moment.Moment} The UTC time.
+ */
+export function utcNow(): Moment.Moment {
+    return now().utc();
 }
 
 /**
