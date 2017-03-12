@@ -23,6 +23,7 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 
 import * as crypto from 'crypto';
+import * as FileType from 'file-type';
 import * as fs from 'fs';
 import * as FSExtra from 'fs-extra';
 import * as Glob from 'glob';
@@ -256,6 +257,73 @@ export function distinctArray<T>(arr: T[]): T[] {
     return arr.filter((x, i) => {
         return arr.indexOf(x) === i;
     });
+}
+
+/**
+ * Checks the file type of a buffer or file.
+ * 
+ * @param {any} bufferOrPath The buffer or the path to the file.
+ *  
+ * @returns {PromiseLike<FileType.FileTypeResult>} The promise with the result.
+ */
+export function fileType(bufferOrPath: any): PromiseLike<FileType.FileTypeResult> {
+    return new Promise<FileType.FileTypeResult>((resolve, reject) => {
+        let completed = (err: any, result?: FileType.FileTypeResult) => {
+            if (err) {
+                reject(err);
+            }
+            else {
+                resolve(result);
+            }
+        };
+        
+        try {
+            if (isNullOrUndefined(bufferOrPath)) {
+                completed(null, bufferOrPath);
+            }
+            else {
+                if (Buffer.isBuffer(bufferOrPath)) {
+                    completed(null, FileType(bufferOrPath));
+                }
+                else {
+                    // handle as file (path)
+
+                    fs.readFile(toStringSafe(bufferOrPath), (err, data) => {
+                        if (err) {
+                            completed(err);
+                        }
+                        else {
+                            completed(null, FileType(data));
+                        }
+                    });
+                }
+            }
+        }
+        catch (e) {
+            completed(e);
+        }
+    });
+}
+
+/**
+ * Checks the file type of a buffer or file (synchronous).
+ * 
+ * @param {any} bufferOrPath The buffer or the path to the file.
+ *  
+ * @returns FileType.FileTypeResult> The result.
+ */
+export function fileTypeSync(bufferOrPath: any): FileType.FileTypeResult {
+    if (isNullOrUndefined(bufferOrPath)) {
+        return bufferOrPath;
+    }
+
+    let buff: Buffer = bufferOrPath;
+    if (!Buffer.isBuffer(bufferOrPath)) {
+        // handle as file (path)
+        buff = fs.readFileSync(toStringSafe(bufferOrPath));
+    }
+
+    return FileType(buff);
 }
 
 /**

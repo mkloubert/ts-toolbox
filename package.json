@@ -26,6 +26,7 @@
   "homepage": "https://github.com/mkloubert/ts-toolbox#readme",
   "readmeFilename": "README.md",
   "devDependencies": {
+    "@types/file-type": "0.0.2",
     "@types/fs-extra": "0.0.37",
     "@types/glob": "^5.0.30",
     "@types/i18next": "^2.3.35",
@@ -34,6 +35,7 @@
     "@types/node": "^7.0.8"
   },
   "dependencies": {
+    "file-type": "^4.1.0",
     "fs-extra": "^2.0.0",
     "glob": "^7.1.1",
     "i18next": "^7.1.2",

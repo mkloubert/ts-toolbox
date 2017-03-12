@@ -1,7 +1,9 @@
+/// <reference types="file-type" />
 /// <reference types="glob" />
 /// <reference types="node" />
 /// <reference types="i18next" />
 /// <reference types="minimatch" />
+import * as FileType from 'file-type';
 import * as Glob from 'glob';
 import * as i18next from 'i18next';
 import * as Minimatch from 'minimatch';
@@ -117,6 +119,22 @@ export declare function detectMimeByFilename(file: string, defValue?: any): stri
  * @returns {T[]} The filtered array.
  */
 export declare function distinctArray<T>(arr: T[]): T[];
+/**
+ * Checks the file type of a buffer or file.
+ *
+ * @param {any} bufferOrPath The buffer or the path to the file.
+ *
+ * @returns {PromiseLike<FileType.FileTypeResult>} The promise with the result.
+ */
+export declare function fileType(bufferOrPath: any): PromiseLike<FileType.FileTypeResult>;
+/**
+ * Checks the file type of a buffer or file (synchronous).
+ *
+ * @param {any} bufferOrPath The buffer or the path to the file.
+ *
+ * @returns FileType.FileTypeResult> The result.
+ */
+export declare function fileTypeSync(bufferOrPath: any): FileType.FileTypeResult;
 /**
  * Searches for files.
  *
