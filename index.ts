@@ -27,6 +27,7 @@ import * as fs from 'fs';
 import * as FSExtra from 'fs-extra';
 import * as Glob from 'glob';
 import * as i18next from 'i18next';
+const IsBinaryFile = require("isbinaryfile");
 import * as MIME from 'mime';
 import * as Minimatch from 'minimatch';
 import * as Moment from 'moment';
@@ -415,6 +416,55 @@ export function initI18(opts?: i18next.Options): PromiseLike<i18next.Translation
             }
         });
     });
+}
+
+/**
+ * Checks if data/file is/contains binary or text content.
+ * 
+ * @param {Buffer|string} dataOrFilepath The data or the path to the file to check.
+ * 
+ * @returns {PromiseLike<boolean>} The promise that indicates if data is binary or not.
+ */
+export function isBinary(dataOrFilepath: Buffer | string): PromiseLike<boolean> {
+    return new Promise<boolean>((resolve, reject) => {
+        let completed = (err: any, isBinary?: boolean) => {
+            if (err) {
+                reject(err);
+            }
+            else {
+                resolve(isBinary);
+            }
+        };
+
+        if (isNullOrUndefined(dataOrFilepath)) {
+            completed(null, <any>dataOrFilepath);
+        }
+        else {
+            IsBinaryFile(dataOrFilepath, null, (err: any, result: boolean) => {
+                if (err) {
+                    completed(err);
+                }
+                else {
+                    completed(null, result);
+                }
+            });
+        }
+    });
+}
+
+/**
+ * Checks if data/file is/contains binary or text content (synchronous).
+ * 
+ * @param {Buffer|string} dataOrFilepath The data or the path to the file to check.
+ * 
+ * @returns {boolean} Is binary content or not.
+ */
+export function isBinarySync(dataOrFilepath: Buffer | string): boolean {
+    if (isNullOrUndefined(dataOrFilepath)) {
+        return <any>dataOrFilepath;
+    }
+
+    return IsBinaryFile.sync(dataOrFilepath, null);
 }
 
 /**

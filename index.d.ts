@@ -154,6 +154,22 @@ export declare function hash(data: any, algo?: string, encoding?: string): Promi
  */
 export declare function initI18(opts?: i18next.Options): PromiseLike<i18next.TranslationFunction>;
 /**
+ * Checks if data/file is/contains binary or text content.
+ *
+ * @param {Buffer|string} dataOrFilepath The data or the path to the file to check.
+ *
+ * @returns {PromiseLike<boolean>} The promise that indicates if data is binary or not.
+ */
+export declare function isBinary(dataOrFilepath: Buffer | string): PromiseLike<boolean>;
+/**
+ * Checks if data/file is/contains binary or text content (synchronous).
+ *
+ * @param {Buffer|string} dataOrFilepath The data or the path to the file to check.
+ *
+ * @returns {boolean} Is binary content or not.
+ */
+export declare function isBinarySync(dataOrFilepath: Buffer | string): boolean;
+/**
  * Checks if the string representation of a value is empty
  * or contains whitespaces only.
  *
