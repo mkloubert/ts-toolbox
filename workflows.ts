@@ -101,6 +101,10 @@ export interface WorkflowActionContext {
      */
     result?: any;
     /**
+     * Gets or sets the state value for the underlying action.
+     */
+    state: any;
+    /**
      * Gets or sets a value for the whole execution chain.
      */
     value?: any;
@@ -183,6 +187,8 @@ export class Workflow {
             try {
                 let allActions = me._actions.map(x => x);
 
+                let actionStates: any[] = [];
+
                 let nextAction: () => void;
 
                 let executions = -1;
@@ -233,9 +239,20 @@ export class Workflow {
                             previousIndex: prevIndx,
                             previousValue: prevVal,
                             result: result,
+                            state: undefined,
                             value: value,
                             workflowState: undefined,
                         };
+
+                        // ctx.state
+                        Object.defineProperty(ctx, 'state', {
+                            get: function() {
+                                return actionStates[index];
+                            },
+                            set: function(newValue) {
+                                actionStates[index] = newValue;
+                            }
+                        });
 
                         // ctx.workflowState
                         Object.defineProperty(ctx, 'workflowState', {

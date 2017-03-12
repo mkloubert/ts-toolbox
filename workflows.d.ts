@@ -77,6 +77,10 @@ export interface WorkflowActionContext {
      */
     result?: any;
     /**
+     * Gets or sets the state value for the underlying action.
+     */
+    state: any;
+    /**
      * Gets or sets a value for the whole execution chain.
      */
     value?: any;

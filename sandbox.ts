@@ -14,7 +14,14 @@ Toolbox.startWorkflow((ctx) => {
 }, (ctx) => {
     return new Promise<any>((resolve, reject) => {
         setTimeout(() => {
-            resolve(5979);
+            if (ctx.state) {
+                ctx.state = 5979;
+            }
+            else {
+                ctx.state = 23979;
+            }
+
+            resolve(ctx.state);
         }, 5000);
     });
 }, (ctx) => {
