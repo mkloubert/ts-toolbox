@@ -34,6 +34,7 @@ import * as Minimatch from 'minimatch';
 import * as Moment from 'moment';
 import * as net from 'net';
 import * as SimpleSocket from 'node-simple-socket';
+import * as UUID from 'node-uuid';
 
 
 /**
@@ -399,6 +400,13 @@ export function globSync(patterns: string | string[], opts?: Glob.IOptions): str
     });
 
     return distinctArray(allFiles);
+}
+
+/**
+ * Alias for 'uuid()'.
+ */
+export function guid(type = 'v4', opts?: UUID.UUIDOptions): string {
+    return uuid.apply(null, arguments);
 }
 
 /**
@@ -786,6 +794,38 @@ export function toStringSafe(str: any, defValue: any = ''): string {
  */
 export function utcNow(): Moment.Moment {
     return now().utc();
+}
+
+/**
+ * Generates an UUID.
+ * 
+ * @param {string} [format] The format. Default: v4 
+ * @param {UUID.UUIDOptions} [opts] The options.
+ * 
+ * @returns {string} The generated UUID.
+ */
+export function uuid(format?: string, opts?: UUID.UUIDOptions): string {
+    format = normalizeString(format);
+
+    let func: Function;
+    switch (format) {
+        case '':
+        case '4':
+        case 'v4':
+            func = UUID.v4;
+            break;
+
+        case '1':
+        case 'v1':
+            func = UUID.v1;
+            break;
+    }
+
+    if (!func) {
+        throw Error(`'${format}' is NOT supported!`);
+    }
+
+    return func(opts);
 }
 
 /**

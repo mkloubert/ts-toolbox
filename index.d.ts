@@ -10,6 +10,7 @@ import * as Minimatch from 'minimatch';
 import * as Moment from 'moment';
 import * as net from 'net';
 import * as SimpleSocket from 'node-simple-socket';
+import * as UUID from 'node-uuid';
 /**
  * A function that converts a value to a string.
  *
@@ -153,6 +154,10 @@ export declare function glob(patterns: string | string[], opts?: Glob.IOptions):
  * @returns {string[]} The matching items.
  */
 export declare function globSync(patterns: string | string[], opts?: Glob.IOptions): string[];
+/**
+ * Alias for 'uuid()'.
+ */
+export declare function guid(type?: string, opts?: UUID.UUIDOptions): string;
 /**
  * Hashes data.
  *
@@ -342,6 +347,15 @@ export declare function toStringSafe(str: any, defValue?: any): string;
  * @returns {Moment.Moment} The UTC time.
  */
 export declare function utcNow(): Moment.Moment;
+/**
+ * Generates an UUID.
+ *
+ * @param {string} [format] The format. Default: v4
+ * @param {UUID.UUIDOptions} [opts] The options.
+ *
+ * @returns {string} The generated UUID.
+ */
+export declare function uuid(format?: string, opts?: UUID.UUIDOptions): string;
 /**
  * Hashes data with Whirlpool.
  *
