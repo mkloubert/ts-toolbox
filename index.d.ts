@@ -3,6 +3,7 @@
 /// <reference types="minimatch" />
 import * as Glob from 'glob';
 import * as Minimatch from 'minimatch';
+import * as Moment from 'moment';
 import * as net from 'net';
 import * as SimpleSocket from 'node-simple-socket';
 /**
@@ -202,6 +203,12 @@ export declare function md5(data: any, encoding?: string): PromiseLike<Buffer>;
  */
 export declare function normalizeString(val: any, normalizer?: StringConverter): string;
 /**
+ * Returns the current time.
+ *
+ * @return {Moment.Moment} The current time.
+ */
+export declare function now(): Moment.Moment;
+/**
  * Replaces all occurrences of the string representation of a value.
  *
  * @param {any} val The input value.
@@ -274,6 +281,12 @@ export declare function toBooleanSafe(val: any, defaultValue?: any): boolean;
  * @return {string} The output value.
  */
 export declare function toStringSafe(str: any, defValue?: any): string;
+/**
+ * Returns the current UTC time.
+ *
+ * @return {Moment.Moment} The UTC time.
+ */
+export declare function utcNow(): Moment.Moment;
 /**
  * Hashes data with Whirlpool.
  *
