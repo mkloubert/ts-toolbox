@@ -88,9 +88,9 @@ export function asArray<T>(val: T | T[], removeEmpty = true): T[] {
  * 
  * @param {T|PromiseLike<T>} result The result.
  * 
- * @returns {PromiseLike<T>} The promise.
+ * @returns {Promise<T>} The promise.
  */
-export function asPromise<T>(result: T | PromiseLike<T>): PromiseLike<T> {
+export function asPromise<T>(result: T | PromiseLike<T>): Promise<T> {
     let r: any = result;
     
     return new Promise<T>((resolve, reject) => {
@@ -210,10 +210,10 @@ export function compareValuesDesc<T>(x: T, y: T): number {
  * @param {number} port The TCP port. 
  * @param {string} [host] The host address.
  * 
- * @returns {PromiseLike<SimpleSocket.SimpleSocket>} The promise with the new socket.
+ * @returns {Promise<SimpleSocket.SimpleSocket>} The promise with the new socket.
  */
-export function connectToSecureServer(port: number, host?: string): PromiseLike<SimpleSocket.SimpleSocket> {
-    return SimpleSocket.connect(port, host);
+export function connectToSecureServer(port: number, host?: string): Promise<SimpleSocket.SimpleSocket> {
+    return asPromise(SimpleSocket.connect(port, host));
 }
 
 /**
@@ -267,9 +267,9 @@ export function distinctArray<T>(arr: T[]): T[] {
  * 
  * @param {any} bufferOrPath The buffer or the path to the file.
  *  
- * @returns {PromiseLike<FileType.FileTypeResult>} The promise with the result.
+ * @returns {Promise<FileType.FileTypeResult>} The promise with the result.
  */
-export function fileType(bufferOrPath: any): PromiseLike<FileType.FileTypeResult> {
+export function fileType(bufferOrPath: any): Promise<FileType.FileTypeResult> {
     return new Promise<FileType.FileTypeResult>((resolve, reject) => {
         let completed = (err: any, result?: FileType.FileTypeResult) => {
             if (err) {
@@ -335,9 +335,9 @@ export function fileTypeSync(bufferOrPath: any): FileType.FileTypeResult {
  * @param {string|string[]} patterns One or more pattern. 
  * @param {Glob.IOptions} [opts] The options for each pattern.
  * 
- * @returns {PromiseLike<string[]>} The promise with the found files.
+ * @returns {Promise<string[]>} The promise with the found files.
  */
-export function glob(patterns: string | string[], opts?: Glob.IOptions): PromiseLike<string[]> {
+export function glob(patterns: string | string[], opts?: Glob.IOptions): Promise<string[]> {
     return new Promise<string[]>((resolve, reject) => {
         let allFiles: string[] = [];
         let completed = (err: any) => {
@@ -418,9 +418,9 @@ export function guid(type = 'v4', opts?: UUID.UUIDOptions): string {
  * @param {string} [algo] The algorithm to use. Default: sha256
  * @param {string} [encoding] The string encoding to use. Default: ascii
  * 
- * @returns {PromiseLike<Buffer>} The promise with the hash.
+ * @returns {Promise<Buffer>} The promise with the hash.
  */
-export function hash(data: any, algo?: string, encoding?: string): PromiseLike<Buffer> {
+export function hash(data: any, algo?: string, encoding?: string): Promise<Buffer> {
     algo = normalizeString(algo);
     if ('' === algo) {
         algo = 'sha256';
@@ -481,9 +481,9 @@ export function hash(data: any, algo?: string, encoding?: string): PromiseLike<B
  * 
  * @param {i18next.Options} [opts] The options.
  * 
- * @returns {PromiseLike<i18next.TranslationFunction>} The promise with the translation function.
+ * @returns {Promise<i18next.TranslationFunction>} The promise with the translation function.
  */
-export function initI18(opts?: i18next.Options): PromiseLike<i18next.TranslationFunction> {
+export function initI18(opts?: i18next.Options): Promise<i18next.TranslationFunction> {
     return new Promise<i18next.TranslationFunction>((resolve, reject) => {
         i18next.init(opts, (err, t) => {
             if (err) {
@@ -501,9 +501,9 @@ export function initI18(opts?: i18next.Options): PromiseLike<i18next.Translation
  * 
  * @param {Buffer|string} dataOrFilepath The data or the path to the file to check.
  * 
- * @returns {PromiseLike<boolean>} The promise that indicates if data is binary or not.
+ * @returns {Promise<boolean>} The promise that indicates if data is binary or not.
  */
-export function isBinary(dataOrFilepath: Buffer | string): PromiseLike<boolean> {
+export function isBinary(dataOrFilepath: Buffer | string): Promise<boolean> {
     return new Promise<boolean>((resolve, reject) => {
         let completed = (err: any, isBinary?: boolean) => {
             if (err) {
@@ -625,9 +625,9 @@ export function match(values: any | any[], patterns: string | string[], opts?: M
  * @param {any} data The data to hash. 
  * @param {string} [encoding] The string encoding to use. Default: ascii
  * 
- * @returns {PromiseLike<Buffer>} The promise with the hash.
+ * @returns {Promise<Buffer>} The promise with the hash.
  */
-export function md5(data: any, encoding?: string): PromiseLike<Buffer> {
+export function md5(data: any, encoding?: string): Promise<Buffer> {
     return hash(data, 'md5', encoding);
 }
 
@@ -683,9 +683,9 @@ export function replaceAllStrings(val: any, searchValue: any, replaceValue: any)
  * @param {any} data The data to hash. 
  * @param {string} [encoding] The string encoding to use. Default: ascii
  * 
- * @returns {PromiseLike<Buffer>} The promise with the hash.
+ * @returns {Promise<Buffer>} The promise with the hash.
  */
-export function sha1(data: any, encoding?: string): PromiseLike<Buffer> {
+export function sha1(data: any, encoding?: string): Promise<Buffer> {
     return hash(data, 'sha1', encoding);
 }
 
@@ -695,9 +695,9 @@ export function sha1(data: any, encoding?: string): PromiseLike<Buffer> {
  * @param {any} data The data to hash. 
  * @param {string} [encoding] The string encoding to use. Default: ascii
  * 
- * @returns {PromiseLike<Buffer>} The promise with the hash.
+ * @returns {Promise<Buffer>} The promise with the hash.
  */
-export function sha256(data: any, encoding?: string): PromiseLike<Buffer> {
+export function sha256(data: any, encoding?: string): Promise<Buffer> {
     return hash(data, 'sha256', encoding);
 }
 
@@ -707,9 +707,9 @@ export function sha256(data: any, encoding?: string): PromiseLike<Buffer> {
  * @param {any} data The data to hash. 
  * @param {string} [encoding] The string encoding to use. Default: ascii
  * 
- * @returns {PromiseLike<Buffer>} The promise with the hash.
+ * @returns {Promise<Buffer>} The promise with the hash.
  */
-export function sha384(data: any, encoding?: string): PromiseLike<Buffer> {
+export function sha384(data: any, encoding?: string): Promise<Buffer> {
     return hash(data, 'sha384', encoding);
 }
 
@@ -719,9 +719,9 @@ export function sha384(data: any, encoding?: string): PromiseLike<Buffer> {
  * @param {any} data The data to hash. 
  * @param {string} [encoding] The string encoding to use. Default: ascii
  * 
- * @returns {PromiseLike<Buffer>} The promise with the hash.
+ * @returns {Promise<Buffer>} The promise with the hash.
  */
-export function sha512(data: any, encoding?: string): PromiseLike<Buffer> {
+export function sha512(data: any, encoding?: string): Promise<Buffer> {
     return hash(data, 'sha512', encoding);
 }
 
@@ -732,11 +732,11 @@ export function sha512(data: any, encoding?: string): PromiseLike<Buffer> {
  * @param {number} [port] The TCP port to use. Default: 80 or 443
  * @param {https.ServerOptions} [httpsOpts] If defined, server will start using secure HTTP.
  * 
- * @returns {(PromiseLike<http.Server|https.Server>)} The promise with the new server instance. 
+ * @returns {(Promise<http.Server|https.Server>)} The promise with the new server instance. 
  */
 export function startHttpServer(requestListener: (req: http.IncomingMessage, resp: http.ServerResponse) => void,
                                 port?: number,
-                                httpsOpts?: https.ServerOptions): PromiseLike<http.Server | https.Server> {
+                                httpsOpts?: https.ServerOptions): Promise<http.Server | https.Server> {
     port = parseInt(toStringSafe(port).trim());
     let isSecure = arguments.length > 2;
     
@@ -774,10 +774,10 @@ export function startHttpServer(requestListener: (req: http.IncomingMessage, res
  * @param {number} port The TCP port the server should listen on.
  * @param {SimpleSocket.ListenCallback} cb The callback for the new connections.
  * 
- * @returns {PromiseLike<net.Server>} The promise with the underlying Node server instance.
+ * @returns {Promise<net.Server>} The promise with the underlying Node server instance.
  */
-export function startSecureServer(port: number, cb: SimpleSocket.ListenCallback): PromiseLike<net.Server> {
-    return SimpleSocket.listen(port, cb);
+export function startSecureServer(port: number, cb: SimpleSocket.ListenCallback): Promise<net.Server> {
+    return asPromise(SimpleSocket.listen(port, cb));
 }
 
 /**
@@ -787,11 +787,11 @@ export function startSecureServer(port: number, cb: SimpleSocket.ListenCallback)
  * @param {(socket: net.Socket) => void} listener The connection/socket listener. 
  * @param {{ allowHalfOpen?: boolean; }} [opts] The options.
  * 
- * @returns {PromiseLike<net.Server>} The promise with the new server instance.
+ * @returns {Promise<net.Server>} The promise with the new server instance.
  */
 export function startServer(port: number,
                             listener: (socket: net.Socket) => void,
-                            opts?: { allowHalfOpen?: boolean; }): PromiseLike<net.Server> {
+                            opts?: { allowHalfOpen?: boolean; }): Promise<net.Server> {
     port = parseInt(toStringSafe(port).trim());
     
     return new Promise<net.Server>((resolve, reject) => {
@@ -913,8 +913,8 @@ export function uuid(format?: string, opts?: UUID.UUIDOptions): string {
  * @param {any} data The data to hash. 
  * @param {string} [encoding] The string encoding to use. Default: ascii
  * 
- * @returns {PromiseLike<Buffer>} The promise with the hash.
+ * @returns {Promise<Buffer>} The promise with the hash.
  */
-export function whirlpool(data: any, encoding?: string): PromiseLike<Buffer> {
+export function whirlpool(data: any, encoding?: string): Promise<Buffer> {
     return hash(data, 'whirlpool', encoding);
 }

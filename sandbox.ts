@@ -1,6 +1,10 @@
 
 import * as Toolbox from './';
 
-let u = Toolbox.guid('4');
+Toolbox.startHttpServer((req, resp) => {
+    if (req) {
+        
+    }
+}).catch((err) => {
 
-console.log(u);
+});
