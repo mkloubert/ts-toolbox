@@ -5,6 +5,8 @@
 /// <reference types="minimatch" />
 import * as FileType from 'file-type';
 import * as Glob from 'glob';
+import * as http from 'http';
+import * as https from 'https';
 import * as i18next from 'i18next';
 import * as Minimatch from 'minimatch';
 import * as Moment from 'moment';
@@ -306,6 +308,16 @@ export declare function sha384(data: any, encoding?: string): PromiseLike<Buffer
  */
 export declare function sha512(data: any, encoding?: string): PromiseLike<Buffer>;
 /**
+ * Starts a new HTTP server.
+ *
+ * @param {(req: http.IncomingMessage, resp: http.ServerResponse) => void} requestListener The request listener.
+ * @param {number} [port] The TCP port to use. Default: 80 or 443
+ * @param {https.ServerOptions} [httpsOpts] If defined, server will start using secure HTTP.
+ *
+ * @returns {(PromiseLike<http.Server|https.Server>)} The promise with the new server instance.
+ */
+export declare function startHttpServer(requestListener: (req: http.IncomingMessage, resp: http.ServerResponse) => void, port?: number, httpsOpts?: https.ServerOptions): PromiseLike<http.Server | https.Server>;
+/**
  * Starts a secure TCP server.
  *
  * @param {number} port The TCP port the server should listen on.
@@ -314,6 +326,18 @@ export declare function sha512(data: any, encoding?: string): PromiseLike<Buffer
  * @returns {PromiseLike<net.Server>} The promise with the underlying Node server instance.
  */
 export declare function startSecureServer(port: number, cb: SimpleSocket.ListenCallback): PromiseLike<net.Server>;
+/**
+ * Starts a new TCP server.
+ *
+ * @param {number} port The TCP port.
+ * @param {(socket: net.Socket) => void} listener The connection/socket listener.
+ * @param {{ allowHalfOpen?: boolean; }} [opts] The options.
+ *
+ * @returns {PromiseLike<net.Server>} The promise with the new server instance.
+ */
+export declare function startServer(port: number, listener: (socket: net.Socket) => void, opts?: {
+    allowHalfOpen?: boolean;
+}): PromiseLike<net.Server>;
 /**
  * Returns a global translation value.
  *

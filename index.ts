@@ -27,6 +27,8 @@ import * as FileType from 'file-type';
 import * as fs from 'fs';
 import * as FSExtra from 'fs-extra';
 import * as Glob from 'glob';
+import * as http from 'http';
+import * as https from 'https';
 import * as i18next from 'i18next';
 const IsBinaryFile = require("isbinaryfile");
 import * as MIME from 'mime';
@@ -724,6 +726,49 @@ export function sha512(data: any, encoding?: string): PromiseLike<Buffer> {
 }
 
 /**
+ * Starts a new HTTP server.
+ * 
+ * @param {(req: http.IncomingMessage, resp: http.ServerResponse) => void} requestListener The request listener.
+ * @param {number} [port] The TCP port to use. Default: 80 or 443
+ * @param {https.ServerOptions} [httpsOpts] If defined, server will start using secure HTTP.
+ * 
+ * @returns {(PromiseLike<http.Server|https.Server>)} The promise with the new server instance. 
+ */
+export function startHttpServer(requestListener: (req: http.IncomingMessage, resp: http.ServerResponse) => void,
+                                port?: number,
+                                httpsOpts?: https.ServerOptions): PromiseLike<http.Server | https.Server> {
+    port = parseInt(toStringSafe(port).trim());
+    let isSecure = arguments.length > 2;
+    
+    return new Promise<http.Server | https.Server>((resolve, reject) => {
+        try {
+            let newServer: http.Server | https.Server;
+            if (isSecure) {
+                newServer = https.createServer(httpsOpts, requestListener);
+            }
+            else {
+                newServer = http.createServer(requestListener);
+            }
+
+            if (isNaN(port)) {
+                port = isSecure ? 443 : 80;
+            }
+
+            newServer.once('error', (err: any) => {
+                reject(err);
+            });
+
+            newServer.listen(port, () => {
+                resolve(newServer);
+            });
+        }
+        catch (e) {
+            reject(e);
+        }
+    });
+}
+
+/**
  * Starts a secure TCP server.
  * 
  * @param {number} port The TCP port the server should listen on.
@@ -733,6 +778,40 @@ export function sha512(data: any, encoding?: string): PromiseLike<Buffer> {
  */
 export function startSecureServer(port: number, cb: SimpleSocket.ListenCallback): PromiseLike<net.Server> {
     return SimpleSocket.listen(port, cb);
+}
+
+/**
+ * Starts a new TCP server.
+ * 
+ * @param {number} port The TCP port.
+ * @param {(socket: net.Socket) => void} listener The connection/socket listener. 
+ * @param {{ allowHalfOpen?: boolean; }} [opts] The options.
+ * 
+ * @returns {PromiseLike<net.Server>} The promise with the new server instance.
+ */
+export function startServer(port: number,
+                            listener: (socket: net.Socket) => void,
+                            opts?: { allowHalfOpen?: boolean; }): PromiseLike<net.Server> {
+    port = parseInt(toStringSafe(port).trim());
+    
+    return new Promise<net.Server>((resolve, reject) => {
+        try {
+            let newServer = net.createServer(opts, listener);
+
+            newServer.once('error', (err) => {
+                reject(err);
+            });
+
+            newServer.once('listening', () => {
+                resolve(newServer);
+            });
+
+            newServer.listen(port);
+        }
+        catch (e) {
+            reject(e);
+        }
+    });
 }
 
 /**
