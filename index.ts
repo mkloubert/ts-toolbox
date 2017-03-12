@@ -23,8 +23,10 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 
 import * as crypto from 'crypto';
+import * as fs from 'fs';
 import * as FSExtra from 'fs-extra';
 import * as Glob from 'glob';
+import * as i18next from 'i18next';
 import * as MIME from 'mime';
 import * as Minimatch from 'minimatch';
 import * as Moment from 'moment';
@@ -37,7 +39,7 @@ import * as SimpleSocket from 'node-simple-socket';
  * 
  * @param {any} val The value to convert.
  * 
- * @return {string} The value as string.
+ * @returns {string} The value as string.
  */
 export type StringConverter = (val: any) => string;
 
@@ -62,7 +64,7 @@ export let DefaultStringNormalizer: StringConverter = (str: string) => str.toLow
  * @param {T|T[]} val The value.
  * @param {boolean} [removeEmpty] Remove empty values or not.
  * 
- * @return {T[]} The value as array.
+ * @returns {T[]} The value as array.
  */
 export function asArray<T>(val: T | T[], removeEmpty = true): T[] {
     if (!Array.isArray(val)) {
@@ -81,7 +83,7 @@ export function asArray<T>(val: T | T[], removeEmpty = true): T[] {
  * 
  * @param {T|PromiseLike<T>} result The result.
  * 
- * @return {PromiseLike<T>} The promise.
+ * @returns {PromiseLike<T>} The promise.
  */
 export function asPromise<T>(result: T | PromiseLike<T>): PromiseLike<T> {
     let r: any = result;
@@ -114,7 +116,7 @@ export function asPromise<T>(result: T | PromiseLike<T>): PromiseLike<T> {
  * 
  * @param {T} val The value / object to clone.
  * 
- * @return {T} The cloned value / object.
+ * @returns {T} The cloned value / object.
  */
 export function cloneObject<T>(val: T): T {
     if (!val) {
@@ -131,7 +133,7 @@ export function cloneObject<T>(val: T): T {
  * @param string y The "right" value.
  * @param boolean [ignoreCase] Compare case sensitive or not.
  * 
- * @return {number} The "sort value".
+ * @returns {number} The "sort value".
  */
 export function compareAsStrings(x: any, y: any,
                                  ignoreCase = false): number {
@@ -154,7 +156,7 @@ export function compareAsStrings(x: any, y: any,
  * @param string y The "right" value.
  * @param boolean [ignoreCase] Compare case sensitive or not.
  * 
- * @return {number} The "sort value".
+ * @returns {number} The "sort value".
  */
 export function compareAsStringsDesc(x: any, y: any,
                                      ignoreCase = false): number {
@@ -167,7 +169,7 @@ export function compareAsStringsDesc(x: any, y: any,
  * @param {T} x The left value.
  * @param {T} y The right value.
  * 
- * @return {number} The "sort value".
+ * @returns {number} The "sort value".
  */
 export function compareValues<T>(x: T, y: T): number {
     if (x === y) {
@@ -191,7 +193,7 @@ export function compareValues<T>(x: T, y: T): number {
  * @param {T} x The left value.
  * @param {T} y The right value.
  * 
- * @return {number} The "sort value".
+ * @returns {number} The "sort value".
  */
 export function compareValuesDesc<T>(x: T, y: T): number {
     return compareValues<T>(y, x);
@@ -203,7 +205,7 @@ export function compareValuesDesc<T>(x: T, y: T): number {
  * @param {number} port The TCP port. 
  * @param {string} [host] The host address.
  * 
- * @return {PromiseLike<SimpleSocket.SimpleSocket>} The promise with the new socket.
+ * @returns {PromiseLike<SimpleSocket.SimpleSocket>} The promise with the new socket.
  */
 export function connectToSecureServer(port: number, host?: string): PromiseLike<SimpleSocket.SimpleSocket> {
     return SimpleSocket.connect(port, host);
@@ -215,7 +217,7 @@ export function connectToSecureServer(port: number, host?: string): PromiseLike<
  * @param {string} file The Filename.
  * @param {any} [defValue] The default value.
  * 
- * @return {string} The MIME type.
+ * @returns {string} The MIME type.
  */
 export function detectMimeByFilename(file: string, defValue?: any): string {
     if (arguments.length < 1) {
@@ -243,7 +245,7 @@ export function detectMimeByFilename(file: string, defValue?: any): string {
  * 
  * @param {T[]} arr The input array.
  * 
- * @return {T[]} The filtered array.
+ * @returns {T[]} The filtered array.
  */
 export function distinctArray<T>(arr: T[]): T[] {
     if (!arr) {
@@ -261,7 +263,7 @@ export function distinctArray<T>(arr: T[]): T[] {
  * @param {string|string[]} patterns One or more pattern. 
  * @param {Glob.IOptions} [opts] The options for each pattern.
  * 
- * @return {PromiseLike<string[]>} The promise with the found files.
+ * @returns {PromiseLike<string[]>} The promise with the found files.
  */
 export function glob(patterns: string | string[], opts?: Glob.IOptions): PromiseLike<string[]> {
     return new Promise<string[]>((resolve, reject) => {
@@ -316,7 +318,7 @@ export function glob(patterns: string | string[], opts?: Glob.IOptions): Promise
  * @param {string|string[]} patterns One or more pattern. 
  * @param {Glob.IOptions} [opts] The options for each pattern.
  * 
- * @return {string[]} The matching items.
+ * @returns {string[]} The matching items.
  */
 export function globSync(patterns: string | string[], opts?: Glob.IOptions): string[] {
     let patternList = asArray(patterns).map(x => toStringSafe(x))
@@ -337,7 +339,7 @@ export function globSync(patterns: string | string[], opts?: Glob.IOptions): str
  * @param {string} [algo] The algorithm to use. Default: sha256
  * @param {string} [encoding] The string encoding to use. Default: ascii
  * 
- * @return {PromiseLike<Buffer>} The promise with the hash.
+ * @returns {PromiseLike<Buffer>} The promise with the hash.
  */
 export function hash(data: any, algo?: string, encoding?: string): PromiseLike<Buffer> {
     algo = normalizeString(algo);
@@ -396,12 +398,32 @@ export function hash(data: any, algo?: string, encoding?: string): PromiseLike<B
 }
 
 /**
+ * Initializes the global language storage.
+ * 
+ * @param {i18next.Options} [opts] The options.
+ * 
+ * @returns {PromiseLike<i18next.TranslationFunction>} The promise with the translation function.
+ */
+export function initI18(opts?: i18next.Options): PromiseLike<i18next.TranslationFunction> {
+    return new Promise<i18next.TranslationFunction>((resolve, reject) => {
+        i18next.init(opts, (err, t) => {
+            if (err) {
+                reject(err);
+            }
+            else {
+                resolve(t);
+            }
+        });
+    });
+}
+
+/**
  * Checks if the string representation of a value is empty
  * or contains whitespaces only.
  * 
  * @param {any} val The value to check.
  * 
- * @return {boolean} Is empty or not.
+ * @returns {boolean} Is empty or not.
  */
 export function isEmptyString(val: any): boolean {
     return '' === toStringSafe(val).trim();
@@ -412,7 +434,7 @@ export function isEmptyString(val: any): boolean {
  * 
  * @param {any} val The value to check.
  * 
- * @return {boolean} Is function or not.
+ * @returns {boolean} Is function or not.
  */
 export function isFunc(val: any): boolean {
     return 'function' === typeof val;
@@ -423,7 +445,7 @@ export function isFunc(val: any): boolean {
  * 
  * @param {any} val The value to check.
  * 
- * @return {boolean} Is (null)/(undefined) or not.
+ * @returns {boolean} Is (null)/(undefined) or not.
  */
 export function isNullOrUndefined(val: any): boolean {
     return null === val ||
@@ -435,7 +457,7 @@ export function isNullOrUndefined(val: any): boolean {
  * 
  * @param {any} val The value to check.
  * 
- * @return {boolean} Is object or not.
+ * @returns {boolean} Is object or not.
  */
 export function isObj(val: any): boolean {
     return 'object' === typeof val;
@@ -448,7 +470,7 @@ export function isObj(val: any): boolean {
  * @param {string|string[]} patterns One or more pattern. 
  * @param {Minimatch.IOptions} [opts] The options to use.
  * 
- * @return {string[]} The matching values a strings.
+ * @returns {string[]} The matching values a strings.
  */
 export function match(values: any | any[], patterns: string | string[], opts?: Minimatch.IOptions): string[] {
     let list = asArray<any>(values, false).map(x => isNullOrUndefined(x) ? x : toStringSafe(x));
@@ -475,7 +497,7 @@ export function match(values: any | any[], patterns: string | string[], opts?: M
  * @param {any} data The data to hash. 
  * @param {string} [encoding] The string encoding to use. Default: ascii
  * 
- * @return {PromiseLike<Buffer>} The promise with the hash.
+ * @returns {PromiseLike<Buffer>} The promise with the hash.
  */
 export function md5(data: any, encoding?: string): PromiseLike<Buffer> {
     return hash(data, 'md5', encoding);
@@ -487,7 +509,7 @@ export function md5(data: any, encoding?: string): PromiseLike<Buffer> {
  * @param {any} val The value to convert.
  * @param StringConverter [normalizer] The custom normalizer.
  * 
- * @return {string} The normalized value.
+ * @returns {string} The normalized value.
  */
 export function normalizeString(val: any, normalizer?: StringConverter): string {
     if (!normalizer) {
@@ -503,7 +525,7 @@ export function normalizeString(val: any, normalizer?: StringConverter): string 
 /**
  * Returns the current time.
  * 
- * @return {Moment.Moment} The current time.
+ * @returns {Moment.Moment} The current time.
  */
 export function now(): Moment.Moment {
     return Moment();
@@ -516,7 +538,7 @@ export function now(): Moment.Moment {
  * @param {any} searchValue The value to search for.
  * @param {any} replaceValue The value to replace 'searchValue' with.
  * 
- * @return {string} The output string.
+ * @returns {string} The output string.
  */
 export function replaceAllStrings(val: any, searchValue: any, replaceValue: any): string {
     if (isNullOrUndefined(val)) {
@@ -533,7 +555,7 @@ export function replaceAllStrings(val: any, searchValue: any, replaceValue: any)
  * @param {any} data The data to hash. 
  * @param {string} [encoding] The string encoding to use. Default: ascii
  * 
- * @return {PromiseLike<Buffer>} The promise with the hash.
+ * @returns {PromiseLike<Buffer>} The promise with the hash.
  */
 export function sha1(data: any, encoding?: string): PromiseLike<Buffer> {
     return hash(data, 'sha1', encoding);
@@ -545,7 +567,7 @@ export function sha1(data: any, encoding?: string): PromiseLike<Buffer> {
  * @param {any} data The data to hash. 
  * @param {string} [encoding] The string encoding to use. Default: ascii
  * 
- * @return {PromiseLike<Buffer>} The promise with the hash.
+ * @returns {PromiseLike<Buffer>} The promise with the hash.
  */
 export function sha256(data: any, encoding?: string): PromiseLike<Buffer> {
     return hash(data, 'sha256', encoding);
@@ -557,7 +579,7 @@ export function sha256(data: any, encoding?: string): PromiseLike<Buffer> {
  * @param {any} data The data to hash. 
  * @param {string} [encoding] The string encoding to use. Default: ascii
  * 
- * @return {PromiseLike<Buffer>} The promise with the hash.
+ * @returns {PromiseLike<Buffer>} The promise with the hash.
  */
 export function sha384(data: any, encoding?: string): PromiseLike<Buffer> {
     return hash(data, 'sha384', encoding);
@@ -569,7 +591,7 @@ export function sha384(data: any, encoding?: string): PromiseLike<Buffer> {
  * @param {any} data The data to hash. 
  * @param {string} [encoding] The string encoding to use. Default: ascii
  * 
- * @return {PromiseLike<Buffer>} The promise with the hash.
+ * @returns {PromiseLike<Buffer>} The promise with the hash.
  */
 export function sha512(data: any, encoding?: string): PromiseLike<Buffer> {
     return hash(data, 'sha512', encoding);
@@ -581,10 +603,22 @@ export function sha512(data: any, encoding?: string): PromiseLike<Buffer> {
  * @param {number} port The TCP port the server should listen on.
  * @param {SimpleSocket.ListenCallback} cb The callback for the new connections.
  * 
- * @return {PromiseLike<net.Server>} The promise with the underlying Node server instance.
+ * @returns {PromiseLike<net.Server>} The promise with the underlying Node server instance.
  */
 export function startSecureServer(port: number, cb: SimpleSocket.ListenCallback): PromiseLike<net.Server> {
     return SimpleSocket.listen(port, cb);
+}
+
+/**
+ * Returns a global translation value.
+ * 
+ * @param {string} key The key.
+ * @param {i18next.TranslationOptions} [opts] The options.
+ * 
+ * @returns {any} The value.
+ */
+export function t(key: string, opts?: i18next.TranslationOptions): any {
+    return i18next.t(key, opts);
 }
 
 /**
@@ -593,7 +627,7 @@ export function startSecureServer(port: number, cb: SimpleSocket.ListenCallback)
  * @param {any} val The value to convert.
  * @param {any} [defaultValue] The value to return if 'val' is (null) or (undefined).
  * 
- * @return {boolean} The converted value.
+ * @returns {boolean} The converted value.
  */
 export function toBooleanSafe(val: any, defaultValue?: any): boolean {
     if (arguments.length < 2) {
@@ -613,7 +647,7 @@ export function toBooleanSafe(val: any, defaultValue?: any): boolean {
  * @param {any} str The input value.
  * @param {any} [defValue] The default value.
  * 
- * @return {string} The output value.
+ * @returns {string} The output value.
  */
 export function toStringSafe(str: any, defValue: any = ''): string {
     if (isNullOrUndefined(str)) {
@@ -630,7 +664,7 @@ export function toStringSafe(str: any, defValue: any = ''): string {
 /**
  * Returns the current UTC time.
  * 
- * @return {Moment.Moment} The UTC time.
+ * @returns {Moment.Moment} The UTC time.
  */
 export function utcNow(): Moment.Moment {
     return now().utc();
@@ -642,7 +676,7 @@ export function utcNow(): Moment.Moment {
  * @param {any} data The data to hash. 
  * @param {string} [encoding] The string encoding to use. Default: ascii
  * 
- * @return {PromiseLike<Buffer>} The promise with the hash.
+ * @returns {PromiseLike<Buffer>} The promise with the hash.
  */
 export function whirlpool(data: any, encoding?: string): PromiseLike<Buffer> {
     return hash(data, 'whirlpool', encoding);

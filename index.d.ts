@@ -1,7 +1,9 @@
 /// <reference types="glob" />
 /// <reference types="node" />
+/// <reference types="i18next" />
 /// <reference types="minimatch" />
 import * as Glob from 'glob';
+import * as i18next from 'i18next';
 import * as Minimatch from 'minimatch';
 import * as Moment from 'moment';
 import * as net from 'net';
@@ -11,7 +13,7 @@ import * as SimpleSocket from 'node-simple-socket';
  *
  * @param {any} val The value to convert.
  *
- * @return {string} The value as string.
+ * @returns {string} The value as string.
  */
 export declare type StringConverter = (val: any) => string;
 /**
@@ -32,7 +34,7 @@ export declare let DefaultStringNormalizer: StringConverter;
  * @param {T|T[]} val The value.
  * @param {boolean} [removeEmpty] Remove empty values or not.
  *
- * @return {T[]} The value as array.
+ * @returns {T[]} The value as array.
  */
 export declare function asArray<T>(val: T | T[], removeEmpty?: boolean): T[];
 /**
@@ -40,7 +42,7 @@ export declare function asArray<T>(val: T | T[], removeEmpty?: boolean): T[];
  *
  * @param {T|PromiseLike<T>} result The result.
  *
- * @return {PromiseLike<T>} The promise.
+ * @returns {PromiseLike<T>} The promise.
  */
 export declare function asPromise<T>(result: T | PromiseLike<T>): PromiseLike<T>;
 /**
@@ -48,7 +50,7 @@ export declare function asPromise<T>(result: T | PromiseLike<T>): PromiseLike<T>
  *
  * @param {T} val The value / object to clone.
  *
- * @return {T} The cloned value / object.
+ * @returns {T} The cloned value / object.
  */
 export declare function cloneObject<T>(val: T): T;
 /**
@@ -58,7 +60,7 @@ export declare function cloneObject<T>(val: T): T;
  * @param string y The "right" value.
  * @param boolean [ignoreCase] Compare case sensitive or not.
  *
- * @return {number} The "sort value".
+ * @returns {number} The "sort value".
  */
 export declare function compareAsStrings(x: any, y: any, ignoreCase?: boolean): number;
 /**
@@ -68,7 +70,7 @@ export declare function compareAsStrings(x: any, y: any, ignoreCase?: boolean): 
  * @param string y The "right" value.
  * @param boolean [ignoreCase] Compare case sensitive or not.
  *
- * @return {number} The "sort value".
+ * @returns {number} The "sort value".
  */
 export declare function compareAsStringsDesc(x: any, y: any, ignoreCase?: boolean): number;
 /**
@@ -77,7 +79,7 @@ export declare function compareAsStringsDesc(x: any, y: any, ignoreCase?: boolea
  * @param {T} x The left value.
  * @param {T} y The right value.
  *
- * @return {number} The "sort value".
+ * @returns {number} The "sort value".
  */
 export declare function compareValues<T>(x: T, y: T): number;
 /**
@@ -86,7 +88,7 @@ export declare function compareValues<T>(x: T, y: T): number;
  * @param {T} x The left value.
  * @param {T} y The right value.
  *
- * @return {number} The "sort value".
+ * @returns {number} The "sort value".
  */
 export declare function compareValuesDesc<T>(x: T, y: T): number;
 /**
@@ -95,7 +97,7 @@ export declare function compareValuesDesc<T>(x: T, y: T): number;
  * @param {number} port The TCP port.
  * @param {string} [host] The host address.
  *
- * @return {PromiseLike<SimpleSocket.SimpleSocket>} The promise with the new socket.
+ * @returns {PromiseLike<SimpleSocket.SimpleSocket>} The promise with the new socket.
  */
 export declare function connectToSecureServer(port: number, host?: string): PromiseLike<SimpleSocket.SimpleSocket>;
 /**
@@ -104,7 +106,7 @@ export declare function connectToSecureServer(port: number, host?: string): Prom
  * @param {string} file The Filename.
  * @param {any} [defValue] The default value.
  *
- * @return {string} The MIME type.
+ * @returns {string} The MIME type.
  */
 export declare function detectMimeByFilename(file: string, defValue?: any): string;
 /**
@@ -112,7 +114,7 @@ export declare function detectMimeByFilename(file: string, defValue?: any): stri
  *
  * @param {T[]} arr The input array.
  *
- * @return {T[]} The filtered array.
+ * @returns {T[]} The filtered array.
  */
 export declare function distinctArray<T>(arr: T[]): T[];
 /**
@@ -121,7 +123,7 @@ export declare function distinctArray<T>(arr: T[]): T[];
  * @param {string|string[]} patterns One or more pattern.
  * @param {Glob.IOptions} [opts] The options for each pattern.
  *
- * @return {PromiseLike<string[]>} The promise with the found files.
+ * @returns {PromiseLike<string[]>} The promise with the found files.
  */
 export declare function glob(patterns: string | string[], opts?: Glob.IOptions): PromiseLike<string[]>;
 /**
@@ -130,7 +132,7 @@ export declare function glob(patterns: string | string[], opts?: Glob.IOptions):
  * @param {string|string[]} patterns One or more pattern.
  * @param {Glob.IOptions} [opts] The options for each pattern.
  *
- * @return {string[]} The matching items.
+ * @returns {string[]} The matching items.
  */
 export declare function globSync(patterns: string | string[], opts?: Glob.IOptions): string[];
 /**
@@ -140,16 +142,24 @@ export declare function globSync(patterns: string | string[], opts?: Glob.IOptio
  * @param {string} [algo] The algorithm to use. Default: sha256
  * @param {string} [encoding] The string encoding to use. Default: ascii
  *
- * @return {PromiseLike<Buffer>} The promise with the hash.
+ * @returns {PromiseLike<Buffer>} The promise with the hash.
  */
 export declare function hash(data: any, algo?: string, encoding?: string): PromiseLike<Buffer>;
+/**
+ * Initializes the global language storage.
+ *
+ * @param {i18next.Options} [opts] The options.
+ *
+ * @returns {PromiseLike<i18next.TranslationFunction>} The promise with the translation function.
+ */
+export declare function initI18(opts?: i18next.Options): PromiseLike<i18next.TranslationFunction>;
 /**
  * Checks if the string representation of a value is empty
  * or contains whitespaces only.
  *
  * @param {any} val The value to check.
  *
- * @return {boolean} Is empty or not.
+ * @returns {boolean} Is empty or not.
  */
 export declare function isEmptyString(val: any): boolean;
 /**
@@ -157,7 +167,7 @@ export declare function isEmptyString(val: any): boolean;
  *
  * @param {any} val The value to check.
  *
- * @return {boolean} Is function or not.
+ * @returns {boolean} Is function or not.
  */
 export declare function isFunc(val: any): boolean;
 /**
@@ -165,7 +175,7 @@ export declare function isFunc(val: any): boolean;
  *
  * @param {any} val The value to check.
  *
- * @return {boolean} Is (null)/(undefined) or not.
+ * @returns {boolean} Is (null)/(undefined) or not.
  */
 export declare function isNullOrUndefined(val: any): boolean;
 /**
@@ -173,7 +183,7 @@ export declare function isNullOrUndefined(val: any): boolean;
  *
  * @param {any} val The value to check.
  *
- * @return {boolean} Is object or not.
+ * @returns {boolean} Is object or not.
  */
 export declare function isObj(val: any): boolean;
 /**
@@ -183,7 +193,7 @@ export declare function isObj(val: any): boolean;
  * @param {string|string[]} patterns One or more pattern.
  * @param {Minimatch.IOptions} [opts] The options to use.
  *
- * @return {string[]} The matching values a strings.
+ * @returns {string[]} The matching values a strings.
  */
 export declare function match(values: any | any[], patterns: string | string[], opts?: Minimatch.IOptions): string[];
 /**
@@ -192,7 +202,7 @@ export declare function match(values: any | any[], patterns: string | string[], 
  * @param {any} data The data to hash.
  * @param {string} [encoding] The string encoding to use. Default: ascii
  *
- * @return {PromiseLike<Buffer>} The promise with the hash.
+ * @returns {PromiseLike<Buffer>} The promise with the hash.
  */
 export declare function md5(data: any, encoding?: string): PromiseLike<Buffer>;
 /**
@@ -201,13 +211,13 @@ export declare function md5(data: any, encoding?: string): PromiseLike<Buffer>;
  * @param {any} val The value to convert.
  * @param StringConverter [normalizer] The custom normalizer.
  *
- * @return {string} The normalized value.
+ * @returns {string} The normalized value.
  */
 export declare function normalizeString(val: any, normalizer?: StringConverter): string;
 /**
  * Returns the current time.
  *
- * @return {Moment.Moment} The current time.
+ * @returns {Moment.Moment} The current time.
  */
 export declare function now(): Moment.Moment;
 /**
@@ -217,7 +227,7 @@ export declare function now(): Moment.Moment;
  * @param {any} searchValue The value to search for.
  * @param {any} replaceValue The value to replace 'searchValue' with.
  *
- * @return {string} The output string.
+ * @returns {string} The output string.
  */
 export declare function replaceAllStrings(val: any, searchValue: any, replaceValue: any): string;
 /**
@@ -226,7 +236,7 @@ export declare function replaceAllStrings(val: any, searchValue: any, replaceVal
  * @param {any} data The data to hash.
  * @param {string} [encoding] The string encoding to use. Default: ascii
  *
- * @return {PromiseLike<Buffer>} The promise with the hash.
+ * @returns {PromiseLike<Buffer>} The promise with the hash.
  */
 export declare function sha1(data: any, encoding?: string): PromiseLike<Buffer>;
 /**
@@ -235,7 +245,7 @@ export declare function sha1(data: any, encoding?: string): PromiseLike<Buffer>;
  * @param {any} data The data to hash.
  * @param {string} [encoding] The string encoding to use. Default: ascii
  *
- * @return {PromiseLike<Buffer>} The promise with the hash.
+ * @returns {PromiseLike<Buffer>} The promise with the hash.
  */
 export declare function sha256(data: any, encoding?: string): PromiseLike<Buffer>;
 /**
@@ -244,7 +254,7 @@ export declare function sha256(data: any, encoding?: string): PromiseLike<Buffer
  * @param {any} data The data to hash.
  * @param {string} [encoding] The string encoding to use. Default: ascii
  *
- * @return {PromiseLike<Buffer>} The promise with the hash.
+ * @returns {PromiseLike<Buffer>} The promise with the hash.
  */
 export declare function sha384(data: any, encoding?: string): PromiseLike<Buffer>;
 /**
@@ -253,7 +263,7 @@ export declare function sha384(data: any, encoding?: string): PromiseLike<Buffer
  * @param {any} data The data to hash.
  * @param {string} [encoding] The string encoding to use. Default: ascii
  *
- * @return {PromiseLike<Buffer>} The promise with the hash.
+ * @returns {PromiseLike<Buffer>} The promise with the hash.
  */
 export declare function sha512(data: any, encoding?: string): PromiseLike<Buffer>;
 /**
@@ -262,16 +272,25 @@ export declare function sha512(data: any, encoding?: string): PromiseLike<Buffer
  * @param {number} port The TCP port the server should listen on.
  * @param {SimpleSocket.ListenCallback} cb The callback for the new connections.
  *
- * @return {PromiseLike<net.Server>} The promise with the underlying Node server instance.
+ * @returns {PromiseLike<net.Server>} The promise with the underlying Node server instance.
  */
 export declare function startSecureServer(port: number, cb: SimpleSocket.ListenCallback): PromiseLike<net.Server>;
+/**
+ * Returns a global translation value.
+ *
+ * @param {string} key The key.
+ * @param {i18next.TranslationOptions} [opts] The options.
+ *
+ * @returns {any} The value.
+ */
+export declare function t(key: string, opts?: i18next.TranslationOptions): any;
 /**
  * Converts a value to a boolean.
  *
  * @param {any} val The value to convert.
  * @param {any} [defaultValue] The value to return if 'val' is (null) or (undefined).
  *
- * @return {boolean} The converted value.
+ * @returns {boolean} The converted value.
  */
 export declare function toBooleanSafe(val: any, defaultValue?: any): boolean;
 /**
@@ -280,13 +299,13 @@ export declare function toBooleanSafe(val: any, defaultValue?: any): boolean;
  * @param {any} str The input value.
  * @param {any} [defValue] The default value.
  *
- * @return {string} The output value.
+ * @returns {string} The output value.
  */
 export declare function toStringSafe(str: any, defValue?: any): string;
 /**
  * Returns the current UTC time.
  *
- * @return {Moment.Moment} The UTC time.
+ * @returns {Moment.Moment} The UTC time.
  */
 export declare function utcNow(): Moment.Moment;
 /**
@@ -295,6 +314,6 @@ export declare function utcNow(): Moment.Moment;
  * @param {any} data The data to hash.
  * @param {string} [encoding] The string encoding to use. Default: ascii
  *
- * @return {PromiseLike<Buffer>} The promise with the hash.
+ * @returns {PromiseLike<Buffer>} The promise with the hash.
  */
 export declare function whirlpool(data: any, encoding?: string): PromiseLike<Buffer>;
