@@ -43,6 +43,17 @@ export declare let DefauleMimeType: any;
  */
 export declare let DefaultStringNormalizer: StringConverter;
 /**
+ * Compares data by hashing it.
+ *
+ * @param {any} x The "left" data.
+ * @param {any} y The "right" data.
+ * @param {string} [algo] The algorithm to use. Default: sha256
+ * @param {string} [encoding] The string encoding to use. Default: ascii
+ *
+ * @returns {Promise<boolean>} The promise that indicates if both data are equal or not.
+ */
+export declare function areEqual(x: any, y: any, algo?: string, encoding?: string): Promise<boolean>;
+/**
  * Converts arguments to an array.
  *
  * @param {IArguments} args The arguments.

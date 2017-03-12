@@ -71,6 +71,30 @@ export let DefaultStringNormalizer: StringConverter = (str: string) => str.toLow
 
 
 /**
+ * Compares data by hashing it.
+ * 
+ * @param {any} x The "left" data.
+ * @param {any} y The "right" data.
+ * @param {string} [algo] The algorithm to use. Default: sha256
+ * @param {string} [encoding] The string encoding to use. Default: ascii
+ * 
+ * @returns {Promise<boolean>} The promise that indicates if both data are equal or not.
+ */
+export function areEqual(x: any, y: any, algo?: string, encoding?: string): Promise<boolean> {
+    return new Promise<boolean>((resolve, reject) => {
+        hash(x, algo, encoding).then((hashX) => {
+            hash(y, algo, encoding).then((hashY) => {
+                resolve(hashX.equals(hashY));
+            }, (err) => {
+                reject(err);
+            });
+        }, (err) => {
+            reject(err);
+        });
+    });
+}
+
+/**
  * Converts arguments to an array.
  * 
  * @param {IArguments} args The arguments.
