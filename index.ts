@@ -300,11 +300,11 @@ export function distinctArray<T>(arr: T[]): T[] {
 /**
  * Checks the file type of a buffer or file.
  * 
- * @param {any} bufferOrPath The buffer or the path to the file.
+ * @param {string|Buffer} bufferOrPath The buffer or the path to the file.
  *  
  * @returns {Promise<FileType.FileTypeResult>} The promise with the result.
  */
-export function fileType(bufferOrPath: any): Promise<FileType.FileTypeResult> {
+export function fileType(bufferOrPath: string | Buffer): Promise<FileType.FileTypeResult> {
     return new Promise<FileType.FileTypeResult>((resolve, reject) => {
         let completed = (err: any, result?: FileType.FileTypeResult) => {
             if (err) {
@@ -317,15 +317,13 @@ export function fileType(bufferOrPath: any): Promise<FileType.FileTypeResult> {
         
         try {
             if (isNullOrUndefined(bufferOrPath)) {
-                completed(null, bufferOrPath);
+                completed(null, <any>bufferOrPath);
             }
             else {
                 if (Buffer.isBuffer(bufferOrPath)) {
                     completed(null, FileType(bufferOrPath));
                 }
                 else {
-                    // handle as file (path)
-
                     fs.readFile(toStringSafe(bufferOrPath), (err, data) => {
                         if (err) {
                             completed(err);
@@ -346,18 +344,20 @@ export function fileType(bufferOrPath: any): Promise<FileType.FileTypeResult> {
 /**
  * Checks the file type of a buffer or file (synchronous).
  * 
- * @param {any} bufferOrPath The buffer or the path to the file.
+ * @param {string|Buffer} bufferOrPath The buffer or the path to the file.
  *  
  * @returns FileType.FileTypeResult> The result.
  */
-export function fileTypeSync(bufferOrPath: any): FileType.FileTypeResult {
+export function fileTypeSync(bufferOrPath: string | Buffer): FileType.FileTypeResult {
     if (isNullOrUndefined(bufferOrPath)) {
-        return bufferOrPath;
+        return <any>bufferOrPath;
     }
 
-    let buff: Buffer = bufferOrPath;
-    if (!Buffer.isBuffer(bufferOrPath)) {
-        // handle as file (path)
+    let buff: Buffer;
+    if (Buffer.isBuffer(bufferOrPath)) {
+        buff = bufferOrPath;
+    }
+    else {
         buff = fs.readFileSync(toStringSafe(bufferOrPath));
     }
 

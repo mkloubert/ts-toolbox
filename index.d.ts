@@ -1,6 +1,6 @@
+/// <reference types="node" />
 /// <reference types="file-type" />
 /// <reference types="glob" />
-/// <reference types="node" />
 /// <reference types="i18next" />
 /// <reference types="minimatch" />
 import * as Cron from 'cron';
@@ -135,19 +135,19 @@ export declare function distinctArray<T>(arr: T[]): T[];
 /**
  * Checks the file type of a buffer or file.
  *
- * @param {any} bufferOrPath The buffer or the path to the file.
+ * @param {string|Buffer} bufferOrPath The buffer or the path to the file.
  *
  * @returns {Promise<FileType.FileTypeResult>} The promise with the result.
  */
-export declare function fileType(bufferOrPath: any): Promise<FileType.FileTypeResult>;
+export declare function fileType(bufferOrPath: string | Buffer): Promise<FileType.FileTypeResult>;
 /**
  * Checks the file type of a buffer or file (synchronous).
  *
- * @param {any} bufferOrPath The buffer or the path to the file.
+ * @param {string|Buffer} bufferOrPath The buffer or the path to the file.
  *
  * @returns FileType.FileTypeResult> The result.
  */
-export declare function fileTypeSync(bufferOrPath: any): FileType.FileTypeResult;
+export declare function fileTypeSync(bufferOrPath: string | Buffer): FileType.FileTypeResult;
 /**
  * Searches for files.
  *
