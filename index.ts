@@ -667,6 +667,68 @@ export function md5(data: any, encoding?: string): Promise<Buffer> {
 }
 
 /**
+ * Creates a directory.
+ * 
+ * @param {string|Buffer} path The path of the new directory.
+ * @param {string|number} [mode] The custom mode.
+ * 
+ * @returns {Promise<any>} The promise.
+ */
+export function mkdir(path: string | Buffer, mode?: string | number): Promise<any> {
+    return new Promise<any>((resolve, reject) => {
+        FSExtra.mkdir(path, <any>mode, (err) => {
+            if (err) {
+                reject(err);
+            }
+            else {
+                resolve();
+            }
+        });
+    });
+}
+
+/**
+ * Creates a directory deep.
+ * 
+ * @param {string} path The path of the new directory.
+ * @param {FSExtra.MkdirOptions} [opts] The options.
+ * 
+ * @returns {Promise<any>} The promise.
+ */
+export function mkdirs(path: string, opts?: FSExtra.MkdirOptions): Promise<any> {
+    return new Promise<any>((resolve, reject) => {
+        FSExtra.mkdirs(toStringSafe(path), opts, (err) => {
+            if (err) {
+                reject(err);
+            }
+            else {
+                resolve();
+            }
+        });
+    });
+}
+
+/**
+ * Creates a directory (synchronous).
+ * 
+ * @param {string|Buffer} path The path of the new directory.
+ * @param {string|number} [mode] The custom mode.
+ */
+export function mkdirSync(path: string | Buffer, mode?: string | number): void {
+    return FSExtra.mkdirSync(path, <any>mode);
+}
+
+/**
+ * Creates a directory deep (synchronous).
+ * 
+ * @param {string} path The path of the new directory.
+ * @param {FSExtra.MkdirOptions} [opts] The options.
+ */
+export function mkdirsSync(dir: string, opts?: FSExtra.MkdirOptions): void {
+    return FSExtra.mkdirsSync(dir, opts);
+}
+
+/**
  * Creates a new cron job.
  * 
  * @param {(string|Date)} time The cron time.

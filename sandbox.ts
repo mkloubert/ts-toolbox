@@ -1,6 +1,12 @@
 
 import * as Toolbox from './';
 
-let cron = Toolbox.startCron('*/5 * * * * *', () => {
-    console.log(new Date());
+Toolbox.mkdir('./a/b/c').then(() => {
+    if (1 == 1) {
+
+    }
+}).catch((err) => {
+    if (err) {
+
+    }
 });

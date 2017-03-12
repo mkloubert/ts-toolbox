@@ -5,6 +5,7 @@
 /// <reference types="minimatch" />
 import * as Cron from 'cron';
 import * as FileType from 'file-type';
+import * as FSExtra from 'fs-extra';
 import * as Glob from 'glob';
 import * as http from 'http';
 import * as https from 'https';
@@ -255,6 +256,38 @@ export declare function match(values: any | any[], patterns: string | string[], 
  * @returns {Promise<Buffer>} The promise with the hash.
  */
 export declare function md5(data: any, encoding?: string): Promise<Buffer>;
+/**
+ * Creates a directory.
+ *
+ * @param {string|Buffer} path The path of the new directory.
+ * @param {string|number} [mode] The custom mode.
+ *
+ * @returns {Promise<any>} The promise.
+ */
+export declare function mkdir(path: string | Buffer, mode?: string | number): Promise<any>;
+/**
+ * Creates a directory deep.
+ *
+ * @param {string} path The path of the new directory.
+ * @param {FSExtra.MkdirOptions} [opts] The options.
+ *
+ * @returns {Promise<any>} The promise.
+ */
+export declare function mkdirs(path: string, opts?: FSExtra.MkdirOptions): Promise<any>;
+/**
+ * Creates a directory (synchronous).
+ *
+ * @param {string|Buffer} path The path of the new directory.
+ * @param {string|number} [mode] The custom mode.
+ */
+export declare function mkdirSync(path: string | Buffer, mode?: string | number): void;
+/**
+ * Creates a directory deep (synchronous).
+ *
+ * @param {string} path The path of the new directory.
+ * @param {FSExtra.MkdirOptions} [opts] The options.
+ */
+export declare function mkdirsSync(dir: string, opts?: FSExtra.MkdirOptions): void;
 /**
  * Creates a new cron job.
  *
