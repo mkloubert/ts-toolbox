@@ -514,6 +514,22 @@ export function fileTypeSync(bufferOrPath: string | Buffer): FileType.FileTypeRe
 }
 
 /**
+ * Converts a JSON string to an object.
+ * 
+ * @param {any} json The JSON data.
+ * 
+ * @returns {T} The object.
+ */
+export function fromJSON<T>(json: any): T {
+    json = toStringSafe(json);
+    if (isEmptyString(json)) {
+        return undefined;
+    }
+
+    return JSON.parse(toStringSafe(json));
+}
+
+/**
  * Searches for files.
  * 
  * @param {string|string[]} patterns One or more pattern. 

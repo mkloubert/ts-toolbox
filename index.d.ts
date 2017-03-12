@@ -200,6 +200,14 @@ export declare function fileType(bufferOrPath: string | Buffer): Promise<FileTyp
  */
 export declare function fileTypeSync(bufferOrPath: string | Buffer): FileType.FileTypeResult;
 /**
+ * Converts a JSON string to an object.
+ *
+ * @param {any} json The JSON data.
+ *
+ * @returns {T} The object.
+ */
+export declare function fromJSON<T>(json: any): T;
+/**
  * Searches for files.
  *
  * @param {string|string[]} patterns One or more pattern.

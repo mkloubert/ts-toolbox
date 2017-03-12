@@ -1,8 +1,17 @@
 
 import * as Toolbox from './';
 
-let e = Toolbox.xmlEncode('<html>');
-let d = Toolbox.xmlDecode(e);
-if (e) {
+interface Test {
+    a: number;
+    b: boolean;
+    c: string;
+}
+
+let j = Toolbox.fromJSON<Test>(`{
+    "a": 5979,
+    "b": true,
+    "c": "TM"
+}`);
+if (j) {
 
 }
