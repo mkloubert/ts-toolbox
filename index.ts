@@ -113,7 +113,7 @@ export function areEqual(x: any, y: any, algo?: string, encoding?: string): Prom
  * 
  * @returns {any[]} The arguments as array.
  */
-export function argumentsToArray(args: IArguments): any[] {
+export function argumentsToArray(args: ArrayLike<any>): any[] {
     if (!args) {
         return <any>args;
     }

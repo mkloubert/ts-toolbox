@@ -68,7 +68,7 @@ export declare function areEqual(x: any, y: any, algo?: string, encoding?: strin
  *
  * @returns {any[]} The arguments as array.
  */
-export declare function argumentsToArray(args: IArguments): any[];
+export declare function argumentsToArray(args: ArrayLike<any>): any[];
 /**
  * Returns a value as array.
  *
