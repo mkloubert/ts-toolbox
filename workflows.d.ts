@@ -65,6 +65,10 @@ export interface WorkflowActionContext {
      */
     nextValue?: any;
     /**
+     * Gets or sets the (permanent) state value for the underlying action.
+     */
+    permanentState: any;
+    /**
      * Gets the index of the previous workflow.
      */
     readonly previousIndex?: number;
@@ -102,17 +106,25 @@ export declare class Workflow {
      */
     protected _actions: WorkflowAction[];
     /**
+     * Stores the permanent state values of the actions.
+     */
+    protected _actionStates: any[];
+    /**
      * Alias for 'then'.
      */
     next(action?: WorkflowAction): Workflow;
     /**
      * Resets the workflow.
      *
-     * @param {any} [newStateValue] The new state value.
+     * @chainable
+     */
+    reset(): Workflow;
+    /**
+     * Resets the state values of the actions.
      *
      * @chainable
      */
-    reset(newStateValue?: any): Workflow;
+    resetActionStates(): Workflow;
     /**
      * Resets the state value.
      *

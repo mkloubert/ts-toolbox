@@ -89,6 +89,10 @@ export interface WorkflowActionContext {
      */
     nextValue?: any;
     /**
+     * Gets or sets the (permanent) state value for the underlying action.
+     */
+    permanentState: any;
+    /**
      * Gets the index of the previous workflow.
      */
     readonly previousIndex?: number;
@@ -127,6 +131,10 @@ export class Workflow {
      * Stores the actions of the Workflow.
      */
     protected _actions: WorkflowAction[] = [];
+    /**
+     * Stores the permanent state values of the actions.
+     */
+    protected _actionStates: any[] = [];
     
     /**
      * Alias for 'then'.
@@ -139,15 +147,26 @@ export class Workflow {
     /**
      * Resets the workflow.
      * 
-     * @param {any} [newStateValue] The new state value.
+     * @chainable
+     */
+    public reset(): Workflow {
+        this._actions = [];
+        this._actionStates = [];
+
+        this.resetActionStates();
+        this.resetState();
+
+        return this;
+    }
+
+    /**
+     * Resets the state values of the actions.
      * 
      * @chainable
      */
-    public reset(newStateValue?: any): Workflow {
-        this._actions = [];
-
-        this.resetState();
-
+    public resetActionStates(): Workflow {
+        this._actionStates = [];
+        
         return this;
     }
 
@@ -236,6 +255,7 @@ export class Workflow {
                             isBetween: index > 0 && (index < (allActions.length - 1)),
                             isFirst: 0 === index,
                             isLast: (allActions.length - 1) === index,
+                            permanentState: undefined,
                             previousIndex: prevIndx,
                             previousValue: prevVal,
                             result: result,
@@ -243,6 +263,16 @@ export class Workflow {
                             value: value,
                             workflowState: undefined,
                         };
+
+                        // ctx.permanentState
+                        Object.defineProperty(ctx, 'permanentState', {
+                            get: function() {
+                                return me._actionStates[index];
+                            },
+                            set: function(newValue) {
+                                me._actionStates[index] = newValue;
+                            }
+                        });
 
                         // ctx.state
                         Object.defineProperty(ctx, 'state', {
