@@ -39,7 +39,13 @@ import * as net from 'net';
 import * as SimpleSocket from 'node-simple-socket';
 import * as UUID from 'node-uuid';
 
-
+/**
+ * Describes a simple 'completed' action.
+ * 
+ * @param {any} err The occurred error.
+ * @param {TResult} [result] The result.
+ */
+export type SimpleCompletedAction<TResult> = (err: any, result?: TResult) => void;
 /**
  * A function that converts a value to a string.
  * 
@@ -249,6 +255,35 @@ function createOrStartCron(start: boolean,
     });
 
     return newCronJob;
+}
+
+/**
+ * Creates a simple 'completed' callback for a promise.
+ * 
+ * @param {(value?: TResult | PromiseLike<TResult>) => void} resolve The 'succeeded' callback.
+ * @param {(reason: any) => void} [reject] The 'error' callback.
+ * 
+ * @return {SimpleCompletedAction<TResult>} The created action.
+ */
+export function createSimpleCompletedAction<TResult>(resolve: (value?: TResult | PromiseLike<TResult>) => void,
+                                                     reject?: (reason: any) => void): SimpleCompletedAction<TResult> {
+    return function(err, result?) {
+        if (err) {
+            if (reject) {
+                reject(err);
+            }
+        }
+        else {
+            if (resolve) {
+                if (arguments.length > 1) {
+                    resolve(result);
+                }
+                else {
+                    resolve();
+                }
+            }
+        }
+    };
 }
 
 /**

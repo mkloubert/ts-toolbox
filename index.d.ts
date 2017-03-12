@@ -16,6 +16,13 @@ import * as net from 'net';
 import * as SimpleSocket from 'node-simple-socket';
 import * as UUID from 'node-uuid';
 /**
+ * Describes a simple 'completed' action.
+ *
+ * @param {any} err The occurred error.
+ * @param {TResult} [result] The result.
+ */
+export declare type SimpleCompletedAction<TResult> = (err: any, result?: TResult) => void;
+/**
  * A function that converts a value to a string.
  *
  * @param {any} val The value to convert.
@@ -115,6 +122,15 @@ export declare function compareValuesDesc<T>(x: T, y: T): number;
  * @returns {Promise<SimpleSocket.SimpleSocket>} The promise with the new socket.
  */
 export declare function connectToSecureServer(port: number, host?: string): Promise<SimpleSocket.SimpleSocket>;
+/**
+ * Creates a simple 'completed' callback for a promise.
+ *
+ * @param {(value?: TResult | PromiseLike<TResult>) => void} resolve The 'succeeded' callback.
+ * @param {(reason: any) => void} [reject] The 'error' callback.
+ *
+ * @return {SimpleCompletedAction<TResult>} The created action.
+ */
+export declare function createSimpleCompletedAction<TResult>(resolve: (value?: TResult | PromiseLike<TResult>) => void, reject?: (reason: any) => void): SimpleCompletedAction<TResult>;
 /**
  * Tries to detect the MIME type of a file.
  *
