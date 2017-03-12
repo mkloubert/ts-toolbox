@@ -213,7 +213,7 @@ export function compareValuesDesc<T>(x: T, y: T): number {
  * @returns {Promise<SimpleSocket.SimpleSocket>} The promise with the new socket.
  */
 export function connectToSecureServer(port: number, host?: string): Promise<SimpleSocket.SimpleSocket> {
-    return asPromise(SimpleSocket.connect(port, host));
+    return SimpleSocket.connect(port, host);
 }
 
 /**
@@ -777,7 +777,7 @@ export function startHttpServer(requestListener: (req: http.IncomingMessage, res
  * @returns {Promise<net.Server>} The promise with the underlying Node server instance.
  */
 export function startSecureServer(port: number, cb: SimpleSocket.ListenCallback): Promise<net.Server> {
-    return asPromise(SimpleSocket.listen(port, cb));
+    return SimpleSocket.listen(port, cb);
 }
 
 /**
