@@ -22,6 +22,11 @@
 
 
 /**
+ * A value storage.
+ */
+export type ValueStorage = { [key: string]: any};
+
+/**
  * A workflow action.
  * 
  * @param {WorkflowActionContext} ctx The current execution context.
@@ -48,6 +53,10 @@ export interface WorkflowActionContext {
      * @chainable
      */
     readonly finish: () => WorkflowAction;
+    /**
+     * Gets the global value storage.
+     */
+    readonly globals: ValueStorage;
     /**
      * Sets the pointer for the next action.
      * 
@@ -89,6 +98,10 @@ export interface WorkflowActionContext {
      */
     nextValue?: any;
     /**
+     * Access the value for permanent, global values.
+     */
+    readonly permanentGlobals: ValueStorage;
+    /**
      * Gets or sets the (permanent) state value for the underlying action.
      */
     permanentState: any;
@@ -122,6 +135,11 @@ export interface WorkflowActionContext {
  * The result of a workflow action.
  */
 export type WorkflowActionResult = Promise<any> | void;
+
+/**
+ * Stores global values.
+ */
+export const GLOBALS: ValueStorage = {};
 
 /**
  * A workflow.
@@ -207,6 +225,7 @@ export class Workflow {
                 let allActions = me._actions.map(x => x);
 
                 let actionStates: any[] = [];
+                let globals: ValueStorage = {};
 
                 let nextAction: () => void;
 
@@ -234,6 +253,7 @@ export class Workflow {
                                 index = allActions.length - 1;
                                 return this;
                             },
+                            globals: globals,
                             goto: function(newIndex) {
                                 --newIndex;
                                 if (newIndex < 0 || newIndex >= allActions.length) {
@@ -255,6 +275,7 @@ export class Workflow {
                             isBetween: index > 0 && (index < (allActions.length - 1)),
                             isFirst: 0 === index,
                             isLast: (allActions.length - 1) === index,
+                            permanentGlobals: GLOBALS,
                             permanentState: undefined,
                             previousIndex: prevIndx,
                             previousValue: prevVal,

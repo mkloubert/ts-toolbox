@@ -1,4 +1,10 @@
 /**
+ * A value storage.
+ */
+export declare type ValueStorage = {
+    [key: string]: any;
+};
+/**
  * A workflow action.
  *
  * @param {WorkflowActionContext} ctx The current execution context.
@@ -24,6 +30,10 @@ export interface WorkflowActionContext {
      * @chainable
      */
     readonly finish: () => WorkflowAction;
+    /**
+     * Gets the global value storage.
+     */
+    readonly globals: ValueStorage;
     /**
      * Sets the pointer for the next action.
      *
@@ -65,6 +75,10 @@ export interface WorkflowActionContext {
      */
     nextValue?: any;
     /**
+     * Access the value for permanent, global values.
+     */
+    readonly permanentGlobals: ValueStorage;
+    /**
      * Gets or sets the (permanent) state value for the underlying action.
      */
     permanentState: any;
@@ -97,6 +111,10 @@ export interface WorkflowActionContext {
  * The result of a workflow action.
  */
 export declare type WorkflowActionResult = Promise<any> | void;
+/**
+ * Stores global values.
+ */
+export declare const GLOBALS: ValueStorage;
 /**
  * A workflow.
  */
