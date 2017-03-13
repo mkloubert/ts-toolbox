@@ -14,7 +14,7 @@ import * as Minimatch from 'minimatch';
 import * as Moment from 'moment';
 import * as net from 'net';
 import * as SimpleSocket from 'node-simple-socket';
-import * as tb_workflows from './workflows';
+import * as Workflows from 'node-workflows';
 import * as UUID from 'node-uuid';
 /**
  * List of possible entity formats.
@@ -376,11 +376,11 @@ export declare function newCron(time: string | Date, onTick: () => void, timeZon
 /**
  * Creates a new workflow.
  *
- * @param {...tb_workflows.WorkflowAction[]} firstActions The first actions.
+ * @param {...Workflows.WorkflowExecutorType[]} firstActions The first actions.
  *
- * @returns {tb_workflows.Workflow} The new workflow.
+ * @returns {Workflows.Workflow} The new workflow.
  */
-export declare function newWorkflow(...firstActions: tb_workflows.WorkflowAction[]): tb_workflows.Workflow;
+export declare function newWorkflow(...firstActions: Workflows.WorkflowExecutorType[]): Workflows.Workflow;
 /**
  * Normalizes a value as string, so that is comparable.
  *
@@ -486,11 +486,11 @@ export declare function startServer(port: number, listener: (socket: net.Socket)
 /**
  * Starts a new workflow.
  *
- * @param {...tb_workflows.WorkflowAction[]} actions The first actions.
+ * @param {...Workflows.WorkflowAction[]} actions The first actions.
  *
  * @returns {Promise<any>} The promise with the result of the workflow.
  */
-export declare function startWorkflow(...actions: tb_workflows.WorkflowAction[]): Promise<any>;
+export declare function startWorkflow(...actions: Workflows.WorkflowExecutorType[]): Promise<any>;
 /**
  * Returns a global translation value.
  *

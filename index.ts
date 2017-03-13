@@ -38,7 +38,7 @@ import * as Minimatch from 'minimatch';
 import * as Moment from 'moment';
 import * as net from 'net';
 import * as SimpleSocket from 'node-simple-socket';
-import * as tb_workflows from './workflows';
+import * as Workflows from 'node-workflows';
 import * as UUID from 'node-uuid';
 
 
@@ -936,12 +936,12 @@ export function newCron(time: string | Date,
 /**
  * Creates a new workflow.
  * 
- * @param {...tb_workflows.WorkflowAction[]} firstActions The first actions.
+ * @param {...Workflows.WorkflowExecutorType[]} firstActions The first actions.
  * 
- * @returns {tb_workflows.Workflow} The new workflow.
+ * @returns {Workflows.Workflow} The new workflow.
  */
-export function newWorkflow(...firstActions: tb_workflows.WorkflowAction[]): tb_workflows.Workflow {
-    let newWorkflow = new tb_workflows.Workflow();
+export function newWorkflow(...firstActions: Workflows.WorkflowExecutorType[]): Workflows.Workflow {
+    let newWorkflow = new Workflows.Workflow();
 
     firstActions.forEach(a => {
         newWorkflow.then(a);
@@ -1152,12 +1152,12 @@ export function startServer(port: number,
 /**
  * Starts a new workflow.
  * 
- * @param {...tb_workflows.WorkflowAction[]} actions The first actions.
+ * @param {...Workflows.WorkflowAction[]} actions The first actions.
  * 
  * @returns {Promise<any>} The promise with the result of the workflow.
  */
-export function startWorkflow(...actions: tb_workflows.WorkflowAction[]): Promise<any> {
-    let newWorkflow = new tb_workflows.Workflow();
+export function startWorkflow(...actions: Workflows.WorkflowExecutorType[]): Promise<any> {
+    let newWorkflow = new Workflows.Workflow();
 
     actions.forEach(a => {
         newWorkflow.then(a);
