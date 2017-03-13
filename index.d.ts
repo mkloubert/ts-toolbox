@@ -376,11 +376,11 @@ export declare function newCron(time: string | Date, onTick: () => void, timeZon
 /**
  * Creates a new workflow.
  *
- * @param {...Workflows.WorkflowExecutorType[]} firstActions The first actions.
+ * @param {...Workflows.WorkflowExecutorType[]} firstExecutors The initial executors.
  *
  * @returns {Workflows.Workflow} The new workflow.
  */
-export declare function newWorkflow(...firstActions: Workflows.WorkflowExecutorType[]): Workflows.Workflow;
+export declare function newWorkflow(...firstExecutors: Workflows.WorkflowExecutorType[]): Workflows.Workflow;
 /**
  * Normalizes a value as string, so that is comparable.
  *
@@ -486,11 +486,11 @@ export declare function startServer(port: number, listener: (socket: net.Socket)
 /**
  * Starts a new workflow.
  *
- * @param {...Workflows.WorkflowAction[]} actions The first actions.
+ * @param {...Workflows.WorkflowExecutorType[]} executors The executors.
  *
  * @returns {Promise<any>} The promise with the result of the workflow.
  */
-export declare function startWorkflow(...actions: Workflows.WorkflowExecutorType[]): Promise<any>;
+export declare function startWorkflow(...executors: Workflows.WorkflowExecutorType[]): Promise<any>;
 /**
  * Returns a global translation value.
  *

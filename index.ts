@@ -936,18 +936,13 @@ export function newCron(time: string | Date,
 /**
  * Creates a new workflow.
  * 
- * @param {...Workflows.WorkflowExecutorType[]} firstActions The first actions.
+ * @param {...Workflows.WorkflowExecutorType[]} firstExecutors The initial executors.
  * 
  * @returns {Workflows.Workflow} The new workflow.
  */
-export function newWorkflow(...firstActions: Workflows.WorkflowExecutorType[]): Workflows.Workflow {
-    let newWorkflow = new Workflows.Workflow();
-
-    firstActions.forEach(a => {
-        newWorkflow.then(a);
-    });
-
-    return newWorkflow;
+export function newWorkflow(...firstExecutors: Workflows.WorkflowExecutorType[]): Workflows.Workflow {
+    return Workflows.create
+                    .apply(null, firstExecutors);
 }
 
 /**
@@ -1152,18 +1147,13 @@ export function startServer(port: number,
 /**
  * Starts a new workflow.
  * 
- * @param {...Workflows.WorkflowAction[]} actions The first actions.
+ * @param {...Workflows.WorkflowExecutorType[]} executors The executors.
  * 
  * @returns {Promise<any>} The promise with the result of the workflow.
  */
-export function startWorkflow(...actions: Workflows.WorkflowExecutorType[]): Promise<any> {
-    let newWorkflow = new Workflows.Workflow();
-
-    actions.forEach(a => {
-        newWorkflow.then(a);
-    });
-
-    return newWorkflow.start();
+export function startWorkflow(...executors: Workflows.WorkflowExecutorType[]): Promise<any> {
+    return Workflows.start
+                    .apply(null, executors);
 }
 
 /**
